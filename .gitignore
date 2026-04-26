@@ -1,0 +1,200 @@
+# ─── Secrets & environment ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
+backend/.env
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+secrets.json
+credentials.json
+service-account.json
+
+# ─── Frontend (Vite / Node) ───────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+frontend/coverage/
+frontend/*.local
+frontend/.cache/
+
+# Node general
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.pnp.*
+package-lock.json.bak
+
+# ─── Backend (Python / uv) ────────────────────────────────────────────────────
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/htmlcov/
+backend/dist/
+backend/build/
+backend/*.egg-info/
+backend/.eggs/
+backend/logs/
+backend/test.db
+backend/*.db
+backend/.coverage
+backend/coverage.xml
+backend/report.xml
+backend/site/
+
+# Python general
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.nox/
+.hypothesis/
+.pytype/
+*.so
+.pdm.toml
+.pdm-python
+.pdm-build/
+pyrightconfig.json
+
+# ─── Testing & coverage ───────────────────────────────────────────────────────
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+cypress/videos/
+cypress/screenshots/
+jest_html_reporters.html
+
+# ─── Build & compile output ───────────────────────────────────────────────────
+dist/
+build/
+out/
+*.tsbuildinfo
+.turbo/
+.next/
+.nuxt/
+.svelte-kit/
+
+# ─── OS & system ──────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ─── Editors & IDEs ───────────────────────────────────────────────────────────
+# VS Code (keep .vscode/extensions.json if you want to share recommended extensions)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# JetBrains (IntelliJ, PyCharm, WebStorm)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+.vim/
+
+# Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+*.log.*
+logs/
+log/
+npm-debug.log*
+lerna-debug.log*
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+.docker/
+docker-compose.override.yml
+
+# ─── Cloud & infrastructure ───────────────────────────────────────────────────
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# AWS
+.aws/
+.elasticbeanstalk/
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# ─── Package manager caches ───────────────────────────────────────────────────
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.temp
+*.orig
+*.rej
+.sass-cache/
+*.map
+# Keep source maps in dev, exclude from repo if large
+# *.js.map
+# *.css.map
