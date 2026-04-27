@@ -21,7 +21,7 @@ export function FilterChip({ label, active, variant = 'default', onClick }: Filt
             : 'border-amber-400 text-amber-600 hover:border-amber-500 hover:text-amber-700'
           : active
             ? 'border-primary bg-primary/5 text-primary'
-            : 'border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-800'
+            : 'border-border text-muted-foreground hover:border-foreground/50 hover:text-foreground'
       )}
     >
       {label}

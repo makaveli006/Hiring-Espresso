@@ -5,32 +5,12 @@ import { SearchBar } from '@/components/search/SearchBar'
 import { HeaderMenu } from '@/components/layout/HeaderMenu'
 import { useUIStore } from '@/store/useUIStore'
 
-function ThemeToggle() {
-  const { theme, setTheme } = useUIStore()
-  const isDark = theme === 'dark'
-  return (
-    <button
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      aria-label="Toggle dark mode"
-      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-        isDark ? 'bg-gray-700' : 'bg-gray-200'
-      }`}
-    >
-      <span
-        className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
-          isDark ? 'translate-x-6' : 'translate-x-1'
-        }`}
-      />
-    </button>
-  )
-}
-
 export function Header() {
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
   const { isSignedIn } = useAuth()
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3">
+    <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center gap-3">
         {/* Logo */}
         <a href="/" className="shrink-0 flex items-center gap-1.5">
@@ -54,7 +34,6 @@ export function Header() {
           )}
           {isSignedIn && <UserButton />}
           <HeaderMenu />
-          <ThemeToggle />
         </div>
       </div>
     </header>

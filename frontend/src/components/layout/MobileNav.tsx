@@ -12,14 +12,14 @@ export function MobileNav() {
   const current = typeof window !== 'undefined' ? window.location.pathname : '/'
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex md:hidden z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border flex md:hidden z-40">
       {NAV_ITEMS.map(({ icon: Icon, label, href }) => (
         <a
           key={href}
           href={href}
           className={cn(
             'flex-1 flex flex-col items-center justify-center py-3 text-xs gap-1 transition-colors',
-            current === href ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
+            current === href ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
           )}
         >
           <Icon className="w-5 h-5" />

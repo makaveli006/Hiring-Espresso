@@ -19,7 +19,7 @@ interface CheckGroupProps {
 function CheckGroup({ title, options, selected, onToggle }: CheckGroupProps) {
   return (
     <div className="mb-6">
-      <h3 className="font-semibold text-sm text-gray-800 mb-3">{title}</h3>
+      <h3 className="font-semibold text-sm text-foreground mb-3">{title}</h3>
       <div className="space-y-2">
         {options.map((opt) => (
           <label key={opt} className="flex items-center gap-2 cursor-pointer">
@@ -28,7 +28,7 @@ function CheckGroup({ title, options, selected, onToggle }: CheckGroupProps) {
               onCheckedChange={() => onToggle(opt.toLowerCase().replace(/ \/ /g, '_').replace(/ /g, '_'))}
               className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
-            <span className="text-sm text-gray-700">{opt}</span>
+            <span className="text-sm text-foreground">{opt}</span>
           </label>
         ))}
       </div>
@@ -53,13 +53,13 @@ export function FilterModal() {
         <div className="overflow-y-auto flex-1 px-6 py-4">
           {/* Location search */}
           <div className="mb-6">
-            <h3 className="font-semibold text-sm text-gray-800 mb-3 flex items-center gap-1">
+            <h3 className="font-semibold text-sm text-foreground mb-3 flex items-center gap-1">
               📍 Locations
             </h3>
             <input
               type="text"
               placeholder="Search cities, states, countries, or continents"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary"
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none bg-background text-foreground focus:border-primary"
             />
             <button className="text-primary text-sm mt-2 font-medium">Anywhere in the world</button>
           </div>

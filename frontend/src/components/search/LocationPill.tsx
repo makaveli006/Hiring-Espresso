@@ -7,14 +7,14 @@ export function LocationPill() {
   return (
     <button
       onClick={() => setActiveFilterModal('locations')}
-      className="flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+      className="flex items-center gap-2 border border-border rounded-full px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors"
     >
-      <MapPin className="w-4 h-4 text-gray-500 shrink-0" />
+      <MapPin className="w-4 h-4 text-muted-foreground shrink-0" />
       <span className="font-medium">India</span>
-      <span className="text-gray-400 text-xs hidden sm:block">
+      <span className="text-muted-foreground text-xs hidden sm:block">
         Remote · Hybrid · Onsite · All Environments
       </span>
-      <ChevronDown className="w-4 h-4 text-gray-400" />
+      <ChevronDown className="w-4 h-4 text-muted-foreground" />
     </button>
   )
 }

@@ -35,7 +35,7 @@ export function HeaderMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+        className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground rounded-md hover:bg-accent transition-colors"
         aria-label="Open menu"
       >
         <Menu className="w-5 h-5" />
@@ -87,33 +87,25 @@ export function HeaderMenu() {
           </a>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-
         {/* Light / Dark toggle */}
-        <div className="flex items-center justify-between px-2 py-1.5">
-          <span className="text-sm text-gray-600">
-            {theme === 'dark' ? 'Dark' : 'Light'}
-          </span>
-          <div className="flex items-center gap-0.5 rounded-full bg-gray-100 p-0.5">
-            <button
-              onClick={() => setTheme('light')}
-              className={`flex items-center justify-center w-6 h-6 rounded-full transition-colors ${
-                theme === 'light' ? 'bg-amber-400 text-white' : 'text-gray-400 hover:text-gray-600'
-              }`}
-              aria-label="Light mode"
-            >
-              <Sun className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setTheme('dark')}
-              className={`flex items-center justify-center w-6 h-6 rounded-full transition-colors ${
-                theme === 'dark' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-600'
-              }`}
-              aria-label="Dark mode"
-            >
-              <Moon className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        <div className="flex flex-col px-4 pt-4 pb-2 border-t border-border">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex items-center space-x-3 w-fit"
+            aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            <span className="text-sm font-medium text-foreground">
+              {theme === 'dark' ? 'Dark' : 'Light'}
+            </span>
+            <div className="flex items-center space-x-2 p-0.5 rounded-full bg-gray-200 shadow-inner border border-gray-300 dark:bg-gray-700 dark:border-gray-600">
+              <div className={`rounded-full p-1 ${theme === 'light' ? 'bg-gray-400' : ''}`}>
+                <Sun className="w-3 h-3" />
+              </div>
+              <div className={`rounded-full p-1 ${theme === 'dark' ? 'bg-gray-400' : ''}`}>
+                <Moon className="w-3 h-3" />
+              </div>
+            </div>
+          </button>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

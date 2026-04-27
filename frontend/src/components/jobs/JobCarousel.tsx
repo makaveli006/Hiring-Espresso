@@ -12,7 +12,7 @@ interface JobCarouselProps {
 
 function CardSkeleton() {
   return (
-    <div className="w-72 shrink-0 border border-gray-100 rounded-xl p-4 space-y-3">
+    <div className="w-72 shrink-0 border border-border rounded-xl p-4 space-y-3">
       <Skeleton className="h-3 w-16" />
       <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-3/4" />
@@ -42,22 +42,22 @@ export function JobCarousel({ title, jobs, isLoading }: JobCarouselProps) {
   return (
     <section className="mb-10">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
           {title}
-          <ArrowRight className="w-4 h-4 text-gray-400" />
+          <ArrowRight className="w-4 h-4 text-muted-foreground" />
         </h2>
         <div className="flex gap-1">
           <button
             onClick={() => scroll('left')}
-            className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
           >
-            <ChevronLeft className="w-4 h-4 text-gray-600" />
+            <ChevronLeft className="w-4 h-4 text-muted-foreground" />
           </button>
           <button
             onClick={() => scroll('right')}
-            className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors"
+            className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
           >
-            <ChevronRight className="w-4 h-4 text-gray-600" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
       </div>

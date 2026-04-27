@@ -32,7 +32,7 @@ export function FilterBar() {
   const filters = useFilterStore((s) => s.filters)
 
   return (
-    <div className="border-b border-gray-100 bg-white px-4 py-2">
+    <div className="border-b border-border bg-background px-4 py-2">
       <div className="max-w-7xl mx-auto flex items-center gap-2 flex-wrap w-full">
         {FILTER_CHIPS.map((chip) => (
           <FilterChip
@@ -45,7 +45,7 @@ export function FilterBar() {
           />
         ))}
 
-        <span className="text-gray-300 text-sm shrink-0 mx-1 select-none">|</span>
+        <span className="text-border text-sm shrink-0 mx-1 select-none">|</span>
 
         {COMPANY_CHIPS.map((chip) => (
           <FilterChip
