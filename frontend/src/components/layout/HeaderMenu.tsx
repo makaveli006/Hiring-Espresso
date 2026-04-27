@@ -66,7 +66,7 @@ export function HeaderMenu() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <a href="/about">About Us</a>
+          <Link to="/about">About Us</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>

@@ -5,6 +5,7 @@ import { HomePage } from '@/pages/HomePage'
 import { PrivacyPage } from '@/pages/PrivacyPage'
 import { TermsPage } from '@/pages/TermsPage'
 import { TalentNetworkPage } from '@/pages/TalentNetworkPage'
+import { AboutPage } from '@/pages/AboutPage'
 
 const rootRoute = createRootRoute()
 
@@ -48,7 +49,17 @@ const talentRoute = createRoute({
   ),
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, privacyRoute, termsRoute, talentRoute])
+const aboutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/about',
+  component: () => (
+    <ContentLayout>
+      <AboutPage />
+    </ContentLayout>
+  ),
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, privacyRoute, termsRoute, talentRoute, aboutRoute])
 
 const router = createRouter({ routeTree })
 

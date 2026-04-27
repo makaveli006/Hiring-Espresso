@@ -147,6 +147,7 @@ Do **not** wait until the end of a session — update CHANGELOG.md immediately a
 - All API calls go through TanStack Query hooks in `src/hooks/`
 - Zod schemas validate all API responses and env vars at startup
 - Framer Motion for card entrance animations and modal transitions
+- **Dark mode colors**: Never use inline `style={{ color: '...' }}` for text — it overrides Tailwind's dark mode classes. Always use semantic tokens: `text-foreground` (headings / dark text that becomes white in dark mode), `text-muted-foreground` (body / gray text). These auto-switch via CSS variables. Brand/accent colors (e.g. `#DD6B20`, `#319795`) may use `text-[#hex]` with a `dark:` variant.
 
 ### Backend
 - Routes in `app/api/` must be thin — delegate to service layer
