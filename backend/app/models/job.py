@@ -13,6 +13,8 @@ class Job(Base):
         Index("ix_jobs_posted_at", "posted_at"),
         Index("ix_jobs_workplace_type", "workplace_type"),
         Index("ix_jobs_location_country", "location_country"),
+        Index("ix_jobs_external_id", "external_id"),
+        Index("ix_jobs_last_validated_at", "last_validated_at"),
     )
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
@@ -33,8 +35,13 @@ class Job(Base):
     salary_max: Mapped[int | None] = mapped_column(Integer)
     salary_currency: Mapped[str | None] = mapped_column(String(10))
     job_posting_url: Mapped[str | None] = mapped_column(String(1000))
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true", index=True)
     source: Mapped[str | None] = mapped_column(String(100))
+    external_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    dedup_hash: Mapped[str | None] = mapped_column(String(64), nullable=True, unique=True)
+    quality_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    is_recruiter_post: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    last_validated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     posted_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 

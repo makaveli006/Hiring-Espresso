@@ -45,7 +45,7 @@ class IngestionPipeline:
         return [f for f in all_fetchers if f.source_name == source]
 
     def run(self, dry_run: bool = False) -> dict:
-        stats = {"fetched": 0, "skipped_dedup": 0, "inserted": 0, "deactivated": 0, "reactivated": 0, "errors": 0}
+        stats = {"fetched": 0, "skipped_dedup": 0, "skipped_recruiter": 0, "skipped_quality": 0, "inserted": 0, "deactivated": 0, "reactivated": 0, "errors": 0}
 
         # Step 1: Fetch raw jobs per source; deactivate/reactivate based on what's still live
         all_raw: list[RawJob] = []
@@ -121,6 +121,17 @@ class IngestionPipeline:
 
         for nj in normalized:
             try:
+                if nj.is_recruiter_post:
+                    stats["skipped_recruiter"] += 1
+                    logger.debug(f"[pipeline] skipped recruiter post: '{nj.title}' at {nj.company_name}")
+                    continue
+                if nj.quality_score is not None and nj.quality_score < settings.job_min_quality_score:
+                    stats["skipped_quality"] += 1
+                    logger.debug(
+                        f"[pipeline] skipped low-quality job (score={nj.quality_score}): "
+                        f"'{nj.title}' at {nj.company_name}"
+                    )
+                    continue
                 company = self.repo.upsert_company(
                     nj.company_name, nj.company_website, nj.company_logo_url
                 )

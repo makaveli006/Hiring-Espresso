@@ -1,8 +1,9 @@
-import { Menu, Filter } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 import { Button } from '@/components/ui/button'
 import { SearchBar } from '@/components/search/SearchBar'
 import { LocationPill } from '@/components/search/LocationPill'
+import { HeaderMenu } from '@/components/layout/HeaderMenu'
 import { useUIStore } from '@/store/useUIStore'
 
 export function Header() {
@@ -39,10 +40,7 @@ export function Header() {
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
-          <button className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700">
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0" />
+          <HeaderMenu />
         </div>
       </div>
     </header>

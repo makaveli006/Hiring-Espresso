@@ -45,3 +45,5 @@ class NormalizedJob:
     location_state: str | None = None
     location_country: str | None = None
     location_display: str | None = None
+    quality_score: int | None = None
+    is_recruiter_post: bool = False

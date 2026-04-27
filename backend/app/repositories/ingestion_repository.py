@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
@@ -60,6 +61,10 @@ class IngestionRepository:
             job_posting_url=nj.job_posting_url,
             is_active=True,
             source=nj.source,
+            external_id=nj.external_id,
+            dedup_hash=nj.dedup_hash,
+            quality_score=nj.quality_score,
+            is_recruiter_post=nj.is_recruiter_post,
             workplace_type=nj.workplace_type,
             commitment=nj.commitment,
             department=nj.department,
@@ -101,6 +106,67 @@ class IngestionRepository:
                 Job.job_posting_url.in_(current_urls),
             )
             .values(is_active=True)
+        )
+        self.db.commit()
+        return result.rowcount
+
+    # --- Validation pipeline methods ---
+
+    def get_jobs_needing_validation(
+        self,
+        sources: list[str],
+        stale_days: int = 3,
+    ) -> list[Job]:
+        """Return active jobs from the given sources whose URL hasn't been checked recently."""
+        cutoff = datetime.now(timezone.utc) - timedelta(days=stale_days)
+        rows = (
+            self.db.execute(
+                select(Job).where(
+                    Job.is_active == True,  # noqa: E712
+                    Job.source.in_(sources),
+                    (Job.last_validated_at == None) | (Job.last_validated_at < cutoff),  # noqa: E711
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return list(rows)
+
+    def bulk_deactivate_job_ids(self, job_ids: list[str]) -> int:
+        if not job_ids:
+            return 0
+        result = self.db.execute(
+            update(Job)
+            .where(Job.id.in_(job_ids))
+            .values(is_active=False)
+        )
+        self.db.commit()
+        return result.rowcount
+
+    def bulk_update_validated_at(self, job_ids: list[str]) -> int:
+        if not job_ids:
+            return 0
+        now = datetime.now(timezone.utc)
+        result = self.db.execute(
+            update(Job)
+            .where(Job.id.in_(job_ids))
+            .values(last_validated_at=now)
+        )
+        self.db.commit()
+        return result.rowcount
+
+    def deactivate_stale_jobs(self, max_age_days: int = 90, validation_grace_days: int = 7) -> int:
+        """Deactivate jobs older than max_age_days that haven't been re-validated recently."""
+        age_cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
+        validation_cutoff = datetime.now(timezone.utc) - timedelta(days=validation_grace_days)
+        result = self.db.execute(
+            update(Job)
+            .where(
+                Job.is_active == True,  # noqa: E712
+                Job.posted_at < age_cutoff,
+                (Job.last_validated_at == None) | (Job.last_validated_at < validation_cutoff),  # noqa: E711
+            )
+            .values(is_active=False)
         )
         self.db.commit()
         return result.rowcount

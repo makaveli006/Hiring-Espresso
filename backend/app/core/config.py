@@ -47,6 +47,14 @@ class Settings(BaseSettings):
     search_discovery_enabled: bool = True
     search_discovery_max_urls: int = 200
 
+    # Job quality filtering
+    job_min_quality_score: int = 30
+    job_max_age_days: int = 90
+
+    # Validation pipeline
+    validation_schedule_hours: int = 24
+    validation_concurrency: int = 20
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",")]

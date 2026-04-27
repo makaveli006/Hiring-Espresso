@@ -8,6 +8,32 @@ from openai import OpenAI
 from app.core.config import settings
 from app.ingestion.models.raw_job import NormalizedJob, RawJob
 
+# Module-level constants — computed once, never per-job
+RECRUITER_COMPANY_KEYWORDS: frozenset[str] = frozenset([
+    "staffing", "recruiting", "talent solutions", "talent group", "consulting group",
+    "search group", "professional services", "human resources consulting",
+    "workforce solutions", "placement services", "manpower", "headhunters",
+    "executive search", "associates inc", "global solutions", "hr solutions",
+])
+
+RECRUITER_DESC_KEYWORDS: frozenset[str] = frozenset([
+    "our client", "on behalf of", "confidential company", "confidential employer",
+    "we are recruiting for", "we are searching for a candidate",
+    "our client is looking", "our client requires", "immediate openings",
+    "submit your resume to", "send your cv to", "third-party recruiter",
+])
+
+
+def _is_recruiter_post(raw: "RawJob") -> bool:
+    company_lower = raw.company_name.lower()
+    if any(kw in company_lower for kw in RECRUITER_COMPANY_KEYWORDS):
+        return True
+    desc_lower = _strip_html(raw.description_html).lower()
+    if any(kw in desc_lower for kw in RECRUITER_DESC_KEYWORDS):
+        return True
+    return False
+
+
 _COMMITMENT_MAP = {
     "full_time": "full_time",
     "full-time": "full_time",
@@ -38,6 +64,8 @@ Given a list of job objects, return a JSON array (same order, same length) where
 - location_country: ISO 3166-1 alpha-2 code (e.g. "US", "GB", "IN"), or null
 - location_display: short human-readable location string or null
 - commitment: one of ["full_time", "part_time", "contract"], or null
+- quality_score: integer 0-100 rating of listing quality. Deduct points for: description under 200 chars (-40), no specific responsibilities listed (-20), purely generic phrases with no specifics like only 'competitive salary' / 'fast-paced environment' (-15), multiple unrelated roles in one post (-25), no company context (-10), 'immediate start' with no company details (-10). Start at 100 and subtract.
+- quality_flags: array of strings from ["vague_description", "too_short", "ghost_job_signals", "multiple_roles", "no_company_context"]. Empty array if none.
 
 Return ONLY valid JSON array, no markdown, no explanation."""
 
@@ -82,7 +110,7 @@ class JobNormalizer:
         return self._client
 
     def normalize_batch(self, raw_jobs: list[RawJob]) -> list[NormalizedJob]:
-        # Apply cheap heuristics first
+        # Apply cheap heuristics first (including recruiter detection — no AI cost)
         heuristic_results = [
             {
                 "workplace_type": _heuristic_workplace_type(j),
@@ -144,6 +172,8 @@ class JobNormalizer:
                     location_state=ai.get("location_state"),
                     location_country=ai.get("location_country"),
                     location_display=ai.get("location_display"),
+                    quality_score=_safe_int(ai.get("quality_score")),
+                    is_recruiter_post=_is_recruiter_post(job),
                 )
             )
 
