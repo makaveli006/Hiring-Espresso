@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -33,6 +33,8 @@ class Job(Base):
     salary_max: Mapped[int | None] = mapped_column(Integer)
     salary_currency: Mapped[str | None] = mapped_column(String(10))
     job_posting_url: Mapped[str | None] = mapped_column(String(1000))
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
+    source: Mapped[str | None] = mapped_column(String(100))
     posted_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 

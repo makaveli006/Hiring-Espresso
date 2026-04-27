@@ -1,7 +1,8 @@
+from contextlib import asynccontextmanager
+
 import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -11,6 +12,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging
 from app.api.jobs import router as jobs_router
 from app.api.users import router as users_router
+from app.ingestion.scheduler import start_scheduler, stop_scheduler
 
 setup_logging()
 
@@ -19,10 +21,19 @@ if settings.sentry_dsn:
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    start_scheduler()
+    yield
+    stop_scheduler()
+
+
 app = FastAPI(
     title="Hiring Espresso API",
     description="Job board API powering the Hiring Espresso clone",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter

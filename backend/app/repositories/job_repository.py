@@ -17,7 +17,7 @@ class JobRepository:
     ) -> tuple[list[Job], str | None]:
         stmt = select(Job).options(joinedload(Job.company))
 
-        conditions = []
+        conditions = [Job.is_active == True]
 
         if filters.keyword:
             kw = f"%{filters.keyword}%"
@@ -62,7 +62,7 @@ class JobRepository:
     def get_by_id(self, job_id: str) -> Job | None:
         return (
             self.db.execute(
-                select(Job).options(joinedload(Job.company)).where(Job.id == job_id)
+                select(Job).options(joinedload(Job.company)).where(Job.id == job_id, Job.is_active == True)
             )
             .scalars()
             .first()

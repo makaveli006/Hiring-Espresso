@@ -1,18 +1,16 @@
 import { JobCarousel } from '@/components/jobs/JobCarousel'
-import { MOCK_JOBS } from '@/data/mockJobs'
-
-const latestJobs = MOCK_JOBS.filter((j) => j.workplace_type === 'onsite')
-const remoteJobs = MOCK_JOBS.filter((j) => j.workplace_type === 'remote')
-const hybridJobs = MOCK_JOBS.filter((j) => j.workplace_type === 'hybrid')
+import { useJobsForCarousel } from '@/hooks/useJobs'
 
 export function HomePage() {
+  const onsite = useJobsForCarousel({ workplace_type: ['onsite'] })
+  const remote = useJobsForCarousel({ workplace_type: ['remote'] })
+  const hybrid = useJobsForCarousel({ workplace_type: ['hybrid'] })
+
   return (
     <div>
-      <JobCarousel title="Latest Jobs in India" jobs={latestJobs} />
-      <JobCarousel title="Remote Jobs" jobs={remoteJobs} />
-      {hybridJobs.length > 0 && (
-        <JobCarousel title="Hybrid Jobs" jobs={hybridJobs} />
-      )}
+      <JobCarousel title="Latest Jobs" jobs={onsite.data ?? []} isLoading={onsite.isLoading} />
+      <JobCarousel title="Remote Jobs" jobs={remote.data ?? []} isLoading={remote.isLoading} />
+      <JobCarousel title="Hybrid Jobs" jobs={hybrid.data ?? []} isLoading={hybrid.isLoading} />
     </div>
   )
 }

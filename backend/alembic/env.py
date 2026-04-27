@@ -48,7 +48,11 @@ def run_migrations_online() -> None:
     from sqlalchemy import create_engine
 
     # Build engine directly to avoid configparser % interpolation issues
-    connectable = create_engine(settings.database_url, poolclass=pool.NullPool)
+    connectable = create_engine(
+        settings.database_url,
+        poolclass=pool.NullPool,
+        connect_args={"options": "-c statement_timeout=0"},
+    )
 
     with connectable.connect() as connection:
         context.configure(

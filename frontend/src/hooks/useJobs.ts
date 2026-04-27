@@ -2,6 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { fetchJob, fetchJobs, hideJob, saveJob, unsaveJob } from '@/api/jobs'
 import { useFilterStore } from '@/store/useFilterStore'
 import { useJobStore } from '@/store/useJobStore'
+import type { Filters } from '@/schemas/filter.schema'
 
 export function useInfiniteJobs() {
   const filters = useFilterStore((s) => s.filters)
@@ -43,6 +44,15 @@ export function useSaveJob() {
   })
 
   return { save, unsave }
+}
+
+export function useJobsForCarousel(filters: Partial<Filters>) {
+  return useQuery({
+    queryKey: ['jobs-carousel', filters],
+    queryFn: () => fetchJobs(filters as Filters),
+    staleTime: 60_000,
+    select: (data) => data.items,
+  })
 }
 
 export function useHideJob() {

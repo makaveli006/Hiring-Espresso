@@ -4,6 +4,39 @@ All notable changes to Hiring Espresso are documented here.
 
 ---
 
+## [Unreleased]
+
+- [Created] `.claude/specs/job-data-ingestion.md` — comprehensive spec for replacing dummy job data with a real 3-tier ingestion pipeline (Arbeitnow/Remotive → Greenhouse/Lever ATS → Exa/Firecrawl/Brave Search scraping) using OpenAI API for AI normalization
+
+### Job Data Ingestion Pipeline
+
+- [Added] `openai`, `apscheduler`, `beautifulsoup4`, `tenacity` dependencies to `backend/pyproject.toml`
+- [Changed] `backend/app/core/config.py` — added ingestion settings: `openai_api_key`, `ingestion_enabled`, `ingestion_schedule_hours`, `ingestion_batch_size`, `ingestion_rate_limit_delay`, `greenhouse_board_tokens`, `lever_company_slugs`
+- [Created] `backend/app/ingestion/models/raw_job.py` — `RawJob` and `NormalizedJob` dataclasses (source-agnostic intermediates)
+- [Created] `backend/app/ingestion/sources/base.py` — abstract `BaseJobFetcher` contract
+- [Created] `backend/app/ingestion/sources/arbeitnow.py` — paginated fetcher for Arbeitnow API (~800 jobs, no auth)
+- [Created] `backend/app/ingestion/sources/remotive.py` — fetcher for Remotive API (~300 remote-tech jobs, no auth)
+- [Created] `backend/app/ingestion/sources/greenhouse.py` — per-board fetcher for Greenhouse ATS public API
+- [Created] `backend/app/ingestion/normalizer.py` — OpenAI `gpt-4o-mini` batch normalizer; extracts skills, YOE, department, salary, location, workplace_type from raw job descriptions
+- [Created] `backend/app/repositories/ingestion_repository.py` — `upsert_company()` + `insert_job()` + `get_existing_urls()` for DB writes
+- [Created] `backend/app/ingestion/pipeline.py` — orchestrator wiring fetchers → dedup → normalizer → repository; URL-based + content-hash deduplication
+- [Created] `backend/app/ingestion/scheduler.py` — `APScheduler BackgroundScheduler` running every `INGESTION_SCHEDULE_HOURS` hours
+- [Changed] `backend/app/main.py` — added FastAPI `lifespan` context manager to start/stop the ingestion scheduler
+- [Created] `backend/scripts/ingest.py` — CLI for manual/initial seed runs (`--source`, `--dry-run`, `--verbose`)
+- [Changed] `backend/.env.example` — documented all new ingestion environment variables
+
+### Job Staleness / Expiry
+
+- [Changed] `backend/app/models/job.py` — added `is_active: Mapped[bool]` (default `true`) and `source: Mapped[str | None]` columns
+- [Migration] `backend/alembic/versions/07199a478798_add_is_active_source_to_jobs.py` — adds `is_active BOOLEAN NOT NULL DEFAULT true`, `source VARCHAR(100)`, and `ix_jobs_is_active` index to `jobs` table
+- [Created] `backend/scripts/migrate_direct.py` — runs the migration via Supabase session pooler (port 6543) to bypass pgBouncer DDL statement_timeout
+- [Changed] `backend/app/repositories/ingestion_repository.py` — `insert_job()` now stores `source` and `is_active=True`; added `deactivate_removed()` and `reactivate_seen()` for per-source staleness management
+- [Changed] `backend/app/ingestion/pipeline.py` — after each source fetch, calls `deactivate_removed()` + `reactivate_seen()` so filled/removed jobs disappear from the UI automatically
+- [Changed] `backend/app/repositories/job_repository.py` — `get_jobs()` and `get_by_id()` now filter `WHERE is_active = TRUE`; filled jobs are silently hidden
+- [Fixed] `'int' object has no attribute 'replace'` in `arbeitnow.py` — Arbeitnow returns `created_at` as a Unix timestamp integer; fixed by using `datetime.fromtimestamp(int(raw_date), tz=timezone.utc)`
+
+---
+
 ## [0.1.0] — 2026-04-27 · Initial Scaffold
 
 ### Project Initialized
