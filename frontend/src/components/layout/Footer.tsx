@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router'
+
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-gray-100 py-6 px-4 text-sm text-gray-500">
@@ -7,7 +9,7 @@ export function Footer() {
           <a href="/about" className="hover:text-gray-800 transition-colors">About</a>
           <a href="/talent" className="hover:text-gray-800 transition-colors">Talent Network</a>
           <a href="/terms" className="hover:text-gray-800 transition-colors">Terms</a>
-          <a href="/privacy" className="hover:text-gray-800 transition-colors">Privacy</a>
+          <Link to="/privacy" className="hover:text-gray-800 transition-colors">Privacy</Link>
         </div>
         <p className="text-xs text-gray-400">© 2026 HiringEspresso. All rights reserved.</p>
       </div>

@@ -1,5 +1,5 @@
-import { Menu, Sun, Moon, Bookmark, Users, Info, Building2 } from 'lucide-react'
-import { SignedIn, SignedOut } from '@clerk/clerk-react'
+import { Menu, Sun, Moon, Building2 } from 'lucide-react'
+import { useAuth } from '@clerk/clerk-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,55 +30,47 @@ function RedditIcon() {
 
 export function HeaderMenu() {
   const { setAuthModalOpen, theme, setTheme } = useUIStore()
+  const { isSignedIn } = useAuth()
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
-          aria-label="Open menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
+      <DropdownMenuTrigger
+        className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu className="w-5 h-5" />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
-        <SignedOut>
-          <DropdownMenuItem onSelect={() => setAuthModalOpen(true)}>
-            Sign up
-          </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => setAuthModalOpen(true)}>
-            Log in
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-        </SignedOut>
+        {!isSignedIn && (
+          <>
+            <DropdownMenuItem onClick={() => setAuthModalOpen(true, 'signUp')}>
+              Sign up
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setAuthModalOpen(true, 'signIn')}>
+              Log in
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
 
         <DropdownMenuItem asChild>
-          <a href="/saved" className="flex items-center gap-2">
-            <Bookmark className="w-4 h-4" />
-            Saved jobs
-          </a>
+          <a href="/saved">Saved jobs</a>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <a href="/talent" className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Talent Network
-          </a>
+          <a href="/talent">Talent Network</a>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <a href="/about" className="flex items-center gap-2">
-            <Info className="w-4 h-4" />
-            About Us
-          </a>
+          <a href="/about">About Us</a>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <a
-            href="https://www.reddit.com/r/hiringcafe"
+            href="https://www.reddit.com/r/hiringespresso"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
@@ -99,10 +91,10 @@ export function HeaderMenu() {
 
         {/* Light / Dark toggle */}
         <div className="flex items-center justify-between px-2 py-1.5">
-          <span className="text-sm">
+          <span className="text-sm text-gray-600">
             {theme === 'dark' ? 'Dark' : 'Light'}
           </span>
-          <div className="flex items-center gap-1 rounded-full bg-gray-100 p-0.5">
+          <div className="flex items-center gap-0.5 rounded-full bg-gray-100 p-0.5">
             <button
               onClick={() => setTheme('light')}
               className={`flex items-center justify-center w-6 h-6 rounded-full transition-colors ${

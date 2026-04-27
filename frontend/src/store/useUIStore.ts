@@ -10,12 +10,15 @@ function loadTheme(): Theme {
   return 'light'
 }
 
+type AuthModalMode = 'signIn' | 'signUp'
+
 interface UIStore {
   authModalOpen: boolean
+  authModalMode: AuthModalMode
   locationModalOpen: boolean
   activeFilterModal: string | null
   theme: Theme
-  setAuthModalOpen: (open: boolean) => void
+  setAuthModalOpen: (open: boolean, mode?: AuthModalMode) => void
   setLocationModalOpen: (open: boolean) => void
   setActiveFilterModal: (name: string | null) => void
   setTheme: (theme: Theme) => void
@@ -23,10 +26,11 @@ interface UIStore {
 
 export const useUIStore = create<UIStore>((set) => ({
   authModalOpen: false,
+  authModalMode: 'signIn',
   locationModalOpen: false,
   activeFilterModal: null,
   theme: loadTheme(),
-  setAuthModalOpen: (open) => set({ authModalOpen: open }),
+  setAuthModalOpen: (open, mode = 'signIn') => set({ authModalOpen: open, authModalMode: mode }),
   setLocationModalOpen: (open) => set({ locationModalOpen: open }),
   setActiveFilterModal: (name) => set({ activeFilterModal: name }),
   setTheme: (theme) => {

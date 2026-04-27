@@ -14,6 +14,6 @@ export class HeaderPage extends BasePage {
     this.searchInput = page.getByPlaceholder('Search')
     this.locationPill = page.locator('header button').filter({ hasText: 'India' })
     this.signUpButton = page.getByRole('button', { name: 'Sign up' })
-    this.menuButton = page.locator('header button').last()
+    this.menuButton = page.getByRole('button', { name: 'Open menu' })
   }
 }
