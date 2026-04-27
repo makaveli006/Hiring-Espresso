@@ -4,6 +4,7 @@ import { ContentLayout } from '@/layouts/ContentLayout'
 import { HomePage } from '@/pages/HomePage'
 import { PrivacyPage } from '@/pages/PrivacyPage'
 import { TermsPage } from '@/pages/TermsPage'
+import { TalentNetworkPage } from '@/pages/TalentNetworkPage'
 
 const rootRoute = createRootRoute()
 
@@ -37,7 +38,17 @@ const termsRoute = createRoute({
   ),
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, privacyRoute, termsRoute])
+const talentRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/talent',
+  component: () => (
+    <ContentLayout>
+      <TalentNetworkPage />
+    </ContentLayout>
+  ),
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, privacyRoute, termsRoute, talentRoute])
 
 const router = createRouter({ routeTree })
 

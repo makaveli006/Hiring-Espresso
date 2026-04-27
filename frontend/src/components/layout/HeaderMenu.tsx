@@ -1,5 +1,6 @@
 import { Menu, Sun, Moon, Building2 } from 'lucide-react'
 import { useAuth } from '@clerk/clerk-react'
+import { Link } from '@tanstack/react-router'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,7 +60,7 @@ export function HeaderMenu() {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <a href="/talent">Talent Network</a>
+          <Link to="/talent">Talent Network</Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

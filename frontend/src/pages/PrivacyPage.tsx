@@ -1,12 +1,12 @@
 export function PrivacyPage() {
   return (
     <article className="prose prose-sm prose-gray max-w-none">
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Privacy Policy for HiringEspresso</h1>
-      <p className="text-sm text-gray-500 mb-8">Effective Date: Aug 28, 2024</p>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Privacy Policy for HiringEspresso</h1>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">Effective Date: Aug 28, 2024</p>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">1. Introduction</h2>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">1. Introduction</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed">
           Welcome to HiringEspresso. We respect your privacy and are committed to protecting your personal
           information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our
           website.
@@ -14,11 +14,11 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">2. Information We Collect</h2>
-        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">2. Information We Collect</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mb-2">
           We may collect the following types of information:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600 dark:text-gray-200">
           <li>
             <strong>Personal Information:</strong> Such as your name, email address, phone number, resume details,
             and any other information you provide when you create an account, apply for a job, or communicate with us.
@@ -36,11 +36,11 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">3. How We Use Your Information</h2>
-        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">3. How We Use Your Information</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mb-2">
           We use the collected information for the following purposes:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600 dark:text-gray-200">
           <li>
             <strong>Job Search and Application:</strong> To help you find jobs and apply for them efficiently.
           </li>
@@ -62,11 +62,11 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">4. Sharing Your Information</h2>
-        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">4. Sharing Your Information</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mb-2">
           We may share your information with:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600 dark:text-gray-200">
           <li>
             <strong>Employers and Recruiters:</strong> To facilitate job applications, we share your information with
             employers and recruiters who may contact you regarding job opportunities.
@@ -83,8 +83,8 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">5. Security of Your Information</h2>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">5. Security of Your Information</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed">
           We take reasonable measures to protect the personal information that we collect and process. However, no
           method of transmission over the internet, or method of electronic storage, is 100% secure, and we cannot
           guarantee its absolute security.
@@ -92,11 +92,11 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">6. Your Data Protection Rights</h2>
-        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">6. Your Data Protection Rights</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mb-2">
           Depending on your location, you may have the following rights regarding your personal information:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+        <ul className="list-disc list-inside space-y-2 text-sm text-gray-600 dark:text-gray-200">
           <li>
             <strong>The right to access</strong> – You have the right to request copies of your personal data.
           </li>
@@ -124,10 +124,10 @@ export function PrivacyPage() {
             that we have collected to another organization, or directly to you, under certain conditions.
           </li>
         </ul>
-        <p className="text-sm text-gray-600 leading-relaxed mt-3">
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mt-3">
           If you make a request, we have one month to respond to you. If you would like to exercise any of these
           rights, please contact us at our email:{' '}
-          <a href="mailto:hello@hiringespresso.com" className="text-blue-600 hover:underline">
+          <a href="mailto:hello@hiringespresso.com" className="text-blue-600 dark:text-blue-400 hover:underline">
             hello@hiringespresso.com
           </a>
           .
@@ -135,8 +135,8 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">7. Changes to This Privacy Policy</h2>
-        <p className="text-sm text-gray-600 leading-relaxed">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">7. Changes to This Privacy Policy</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed">
           We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
           Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.
           Changes to this Privacy Policy are effective when they are posted on this page.
@@ -144,14 +144,14 @@ export function PrivacyPage() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">8. Contact Us</h2>
-        <p className="text-sm text-gray-600 leading-relaxed mb-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">8. Contact Us</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-200 leading-relaxed mb-2">
           If you have any questions about this Privacy Policy, please contact us:
         </p>
-        <ul className="list-disc list-inside text-sm text-gray-600">
+        <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-200">
           <li>
             By email:{' '}
-            <a href="mailto:hello@hiringespresso.com" className="text-blue-600 hover:underline">
+            <a href="mailto:hello@hiringespresso.com" className="text-blue-600 dark:text-blue-400 hover:underline">
               hello@hiringespresso.com
             </a>
           </li>

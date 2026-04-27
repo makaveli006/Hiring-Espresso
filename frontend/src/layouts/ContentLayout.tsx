@@ -1,10 +1,22 @@
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { MobileNav } from '@/components/layout/MobileNav'
 import { AuthModal } from '@/components/auth/AuthModal'
+import { useUIStore } from '@/store/useUIStore'
 
 export function ContentLayout({ children }: { children: ReactNode }) {
+  const theme = useUIStore((s) => s.theme)
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (theme === 'dark') {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
+  }, [theme])
   return (
     <>
       <Header />
