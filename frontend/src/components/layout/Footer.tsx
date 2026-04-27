@@ -8,7 +8,7 @@ export function Footer() {
         <div className="flex items-center gap-6">
           <a href="/about" className="hover:text-foreground transition-colors">About</a>
           <a href="/talent" className="hover:text-foreground transition-colors">Talent Network</a>
-          <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
+          <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
           <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
         </div>
         <p className="text-xs text-muted-foreground/70">© 2026 HiringEspresso. All rights reserved.</p>

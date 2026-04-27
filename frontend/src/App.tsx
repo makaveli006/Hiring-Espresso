@@ -3,6 +3,7 @@ import { RootLayout } from '@/layouts/RootLayout'
 import { ContentLayout } from '@/layouts/ContentLayout'
 import { HomePage } from '@/pages/HomePage'
 import { PrivacyPage } from '@/pages/PrivacyPage'
+import { TermsPage } from '@/pages/TermsPage'
 
 const rootRoute = createRootRoute()
 
@@ -26,7 +27,17 @@ const privacyRoute = createRoute({
   ),
 })
 
-const routeTree = rootRoute.addChildren([indexRoute, privacyRoute])
+const termsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/terms',
+  component: () => (
+    <ContentLayout>
+      <TermsPage />
+    </ContentLayout>
+  ),
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, privacyRoute, termsRoute])
 
 const router = createRouter({ routeTree })
 
