@@ -1,5 +1,5 @@
 import { Menu, Sun, Moon, Building2 } from 'lucide-react'
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth, UserButton } from '@clerk/clerk-react'
 import { Link } from '@tanstack/react-router'
 import {
   DropdownMenu,
@@ -36,10 +36,17 @@ export function HeaderMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground rounded-md hover:bg-accent transition-colors"
+        className="flex items-center gap-2 border border-border rounded-full px-2 py-1.5 hover:shadow-md transition-shadow bg-background"
         aria-label="Open menu"
       >
-        <Menu className="w-5 h-5" />
+        <Menu className="w-5 h-5 text-foreground" />
+        {isSignedIn ? (
+          <div className="w-7 h-7 rounded-full overflow-hidden shrink-0">
+            <UserButton />
+          </div>
+        ) : (
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-primary shrink-0" />
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
