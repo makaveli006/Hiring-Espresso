@@ -30,6 +30,7 @@ export function FilterBar() {
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const activeModal = useUIStore((s) => s.activeFilterModal)
   const filters = useFilterStore((s) => s.filters)
+  const hasSelectedDepartments = (filters.department?.length ?? 0) > 0
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
@@ -39,7 +40,10 @@ export function FilterBar() {
             <FilterChip
               key={chip.modal}
               label={chip.label}
-              active={activeModal === chip.modal}
+              active={
+                activeModal === chip.modal ||
+                (chip.modal === 'departments' && hasSelectedDepartments)
+              }
               onClick={() =>
                 setActiveFilterModal(activeModal === chip.modal ? null : chip.modal)
               }
