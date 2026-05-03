@@ -30,7 +30,7 @@ function RedditIcon() {
 
 export function HeaderMenu() {
   const { setAuthModalOpen, theme, setTheme } = useUIStore()
-  const { isSignedIn } = useAuth()
+  const { isLoaded, isSignedIn } = useAuth()
 
   return (
     <DropdownMenu>
@@ -49,7 +49,7 @@ export function HeaderMenu() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-56">
-        {!isSignedIn && (
+        {isLoaded && !isSignedIn && (
           <>
             <DropdownMenuItem onClick={() => setAuthModalOpen(true, 'signUp')}>
               Sign up

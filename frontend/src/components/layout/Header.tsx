@@ -1,5 +1,6 @@
 import { Filter, Sparkles } from 'lucide-react'
-import { useAuth, UserButton } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react'
+import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { SearchBar } from '@/components/search/SearchBar'
 import { LocationPill } from '@/components/search/LocationPill'
@@ -12,20 +13,20 @@ interface HeaderProps {
 
 export function Header({ simple = false }: HeaderProps) {
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
-  const { isSignedIn } = useAuth()
+  const { isLoaded, isSignedIn } = useAuth()
 
   return (
     <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-2">
       <div className="max-w-[1456px] mx-auto flex items-center gap-2">
         {/* Logo */}
-        <a href="/" className="shrink-0 flex items-center gap-1.5">
+        <Link to="/" className="shrink-0 flex items-center gap-1.5">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
             <Filter className="w-4 h-4 text-white" />
           </div>
           <span className="text-blue-500 font-extrabold hidden xl:block">
             HiringEspresso
           </span>
-        </a>
+        </Link>
 
         {/* Search + location selector */}
         <SearchBar simple={simple} />
@@ -38,10 +39,8 @@ export function Header({ simple = false }: HeaderProps) {
             Add Career Page
           </button>
 
-          {/* Sign Up / User */}
-          {isSignedIn ? (
-            <UserButton />
-          ) : (
+          {/* Sign Up (signed-out only) */}
+          {isLoaded && !isSignedIn && (
             <Button
               onClick={() => setAuthModalOpen(true, 'signUp')}
               className="bg-[#facc15] hover:bg-[#eab308] text-black rounded-full text-sm px-5 py-2.5 font-semibold shrink-0"
