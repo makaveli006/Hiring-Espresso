@@ -18,7 +18,7 @@ export function AuthModal() {
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
 
   return (
-    <Dialog open={open} onOpenChange={setAuthModalOpen}>
+    <Dialog open={open} onOpenChange={(nextOpen) => setAuthModalOpen(nextOpen)}>
       <DialogContent className="max-w-md p-0 overflow-hidden [&>button]:hidden">
         {mode === 'signUp' ? (
           <SignUp

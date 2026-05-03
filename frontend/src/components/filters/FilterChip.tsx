@@ -14,14 +14,14 @@ export function FilterChip({ label, active, variant = 'default', onClick }: Filt
     <button
       onClick={onClick}
       className={cn(
-        'shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap',
+        'shrink-0 rounded-[8px] border px-4 py-1.5 text-[13px] font-semibold leading-none transition-colors whitespace-nowrap',
         isCompany
           ? active
             ? 'border-amber-500 bg-amber-50 text-amber-700'
-            : 'border-amber-400 text-amber-600 hover:border-amber-500 hover:text-amber-700'
+            : 'border-amber-400 text-amber-700 hover:border-amber-500'
           : active
             ? 'border-primary bg-primary/5 text-primary'
-            : 'border-border text-muted-foreground hover:border-foreground/50 hover:text-foreground'
+            : 'border-border text-gray-700 hover:border-gray-500'
       )}
     >
       {label}

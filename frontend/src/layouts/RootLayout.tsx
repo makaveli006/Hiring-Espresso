@@ -24,7 +24,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
     <>
       <Header />
       <FilterBar />
-      <main className="max-w-7xl mx-auto px-4 py-6 pb-20 md:pb-6 flex-1 w-full">
+      <main className="max-w-[1456px] mx-auto px-4 py-6 pb-20 md:pb-6 flex-1 w-full">
         {children}
       </main>
       <Footer />

@@ -3,6 +3,7 @@ import { fetchJob, fetchJobs, hideJob, saveJob, unsaveJob } from '@/api/jobs'
 import { useFilterStore } from '@/store/useFilterStore'
 import { useJobStore } from '@/store/useJobStore'
 import type { Filters } from '@/schemas/filter.schema'
+import { MOCK_JOBS } from '@/data/mockJobs'
 
 export function useInfiniteJobs() {
   const filters = useFilterStore((s) => s.filters)
@@ -47,11 +48,24 @@ export function useSaveJob() {
 }
 
 export function useJobsForCarousel(filters: Partial<Filters>) {
+  const isHybridCarousel =
+    filters.workplace_type?.length === 1 && filters.workplace_type[0] === 'hybrid'
+
   return useQuery({
     queryKey: ['jobs-carousel', filters],
     queryFn: () => fetchJobs(filters as Filters),
     staleTime: 60_000,
-    select: (data) => data.items,
+    select: (data) => {
+      if (!isHybridCarousel) return data.items
+
+      const hybridDummyJobs = MOCK_JOBS
+        .filter((job) => job.workplace_type === 'hybrid')
+        .slice(0, 10)
+      const existingIds = new Set(data.items.map((job) => job.id))
+      const missingDummyJobs = hybridDummyJobs.filter((job) => !existingIds.has(job.id))
+
+      return [...missingDummyJobs, ...data.items]
+    },
   })
 }
 

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".github\\hooks\\on_edit.ps1\"",
+            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".claude\\hooks\\on_edit.ps1\"",
             "timeout": 60,
             "statusMessage": "Running lint and type-check..."
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".github\\hooks\\guard_edit.ps1\"",
+            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".claude\\hooks\\guard_edit.ps1\"",
             "timeout": 10
           }
         ]
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".github\\hooks\\guard_bash.ps1\"",
+            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".claude\\hooks\\guard_bash.ps1\"",
             "timeout": 10
           }
         ]
@@ -40,7 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".github\\hooks\\notify_done.ps1\"",
+            "command": "powershell.exe -NonInteractive -ExecutionPolicy Bypass -File \".claude\\hooks\\notify_done.ps1\"",
             "timeout": 8,
             "async": true
           }

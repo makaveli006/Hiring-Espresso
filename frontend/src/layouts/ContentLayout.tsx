@@ -19,7 +19,7 @@ export function ContentLayout({ children }: { children: ReactNode }) {
   }, [theme])
   return (
     <>
-      <Header />
+      <Header simple />
       <main className="max-w-2xl mx-auto px-4 py-10 pb-20 md:pb-10 flex-1 w-full">
         {children}
       </main>

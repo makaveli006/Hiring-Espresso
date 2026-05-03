@@ -1,6 +1,5 @@
 import { Menu, Sun, Moon, Building2 } from 'lucide-react'
 import { useAuth, UserButton } from '@clerk/clerk-react'
-import { Link } from '@tanstack/react-router'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,16 +35,16 @@ export function HeaderMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center gap-2 border border-border rounded-full px-2 py-1.5 hover:shadow-md transition-shadow bg-background"
+        className="flex items-center gap-2 border border-border rounded-full px-3 py-2 hover:shadow-sm transition-shadow bg-background"
         aria-label="Open menu"
       >
-        <Menu className="w-5 h-5 text-foreground" />
+        <Menu className="w-4 h-4 text-muted-foreground" />
         {isSignedIn ? (
           <div className="w-7 h-7 rounded-full overflow-hidden shrink-0">
             <UserButton />
           </div>
         ) : (
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-primary shrink-0" />
+          <div className="w-5 h-5 rounded-full bg-gray-300 shrink-0" />
         )}
       </DropdownMenuTrigger>
 
@@ -62,37 +61,32 @@ export function HeaderMenu() {
           </>
         )}
 
-        <DropdownMenuItem asChild>
-          <a href="/saved">Saved jobs</a>
+        <DropdownMenuItem onClick={() => { window.location.href = '/saved' }}>
+          Saved jobs
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link to="/talent">Talent Network</Link>
+        <DropdownMenuItem onClick={() => { window.location.href = '/talent' }}>
+          Talent Network
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
-          <Link to="/about">About Us</Link>
+        <DropdownMenuItem onClick={() => { window.location.href = '/about' }}>
+          About Us
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <a
-            href="https://www.reddit.com/r/hiringespresso"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2"
-          >
-            <RedditIcon />
-            Follow on Reddit
-          </a>
+        <DropdownMenuItem
+          onClick={() => {
+            window.open('https://www.reddit.com/r/hiringespresso', '_blank', 'noopener,noreferrer')
+          }}
+        >
+          <RedditIcon />
+          Follow on Reddit
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <a href="/employers" className="flex items-center gap-2">
-            <Building2 className="w-4 h-4" />
-            Employers
-          </a>
+        <DropdownMenuItem onClick={() => { window.location.href = '/employers' }}>
+          <Building2 className="w-4 h-4" />
+          Employers
         </DropdownMenuItem>
 
         {/* Light / Dark toggle */}

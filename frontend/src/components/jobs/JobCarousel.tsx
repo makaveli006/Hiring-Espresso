@@ -12,7 +12,7 @@ interface JobCarouselProps {
 
 function CardSkeleton() {
   return (
-    <div className="w-72 shrink-0 border border-border rounded-xl p-4 space-y-3">
+    <div className="w-[286px] h-[408px] shrink-0 border border-border rounded-xl p-4 space-y-3">
       <Skeleton className="h-3 w-16" />
       <Skeleton className="h-4 w-full" />
       <Skeleton className="h-4 w-3/4" />
@@ -36,7 +36,7 @@ export function JobCarousel({ title, jobs, isLoading }: JobCarouselProps) {
 
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return
-    scrollRef.current.scrollBy({ left: dir === 'right' ? 300 : -300, behavior: 'smooth' })
+    scrollRef.current.scrollBy({ left: dir === 'right' ? 302 : -302, behavior: 'smooth' })
   }
 
   return (
@@ -64,7 +64,7 @@ export function JobCarousel({ title, jobs, isLoading }: JobCarouselProps) {
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide pb-2"
+        className="flex items-start gap-4 overflow-x-auto scrollbar-hide pb-2"
       >
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)

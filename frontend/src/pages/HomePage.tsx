@@ -8,7 +8,11 @@ export function HomePage() {
 
   return (
     <div>
-      <JobCarousel title="Latest Jobs" jobs={onsite.data ?? []} isLoading={onsite.isLoading} />
+      <JobCarousel
+        title="Latest Jobs in United States"
+        jobs={onsite.data ?? []}
+        isLoading={onsite.isLoading}
+      />
       <JobCarousel title="Remote Jobs" jobs={remote.data ?? []} isLoading={remote.isLoading} />
       <JobCarousel title="Hybrid Jobs" jobs={hybrid.data ?? []} isLoading={hybrid.isLoading} />
     </div>

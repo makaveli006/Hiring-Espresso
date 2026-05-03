@@ -278,3 +278,39 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] `frontend/src/components/layout/FilterBar.tsx` — replaced `<div>` divider with `|` pipe character separator between job chips and company chips; matches reference
 - [Changed] `frontend/src/components/layout/FilterBar.tsx` — passed `variant="company"` to company filter chips (Company, Industry, Stage & Funding, Size, Founding Year)
 - [Changed] `frontend/src/components/filters/FilterChip.tsx` — added `variant` prop (`'default' | 'company'`); company variant renders amber/gold border + text to match HiringCafe's visual distinction between job filters and company filters
+
+---
+
+## [0.4.0] — 2026-05-03 · Dark Mode + Job Card Hover Overlay + Base Card Redesign
+
+### Dark Mode
+
+- [Changed] `frontend/src/components/layout/HeaderMenu.tsx` — replaced separate Sun/Moon buttons with single pill toggle (label + icon pair inside rounded pill) matching hiring.cafe design; moved toggle below `border-t border-border` divider
+- [Changed] `frontend/src/components/layout/Header.tsx` — removed `ThemeToggle` component; replaced hardcoded `bg-white border-b border-gray-100` with `bg-background border-b border-border`
+- [Changed] `frontend/src/components/layout/FilterBar.tsx` — replaced `border-gray-100 bg-white` with `border-border bg-background`; `text-gray-300` separator → `text-border`
+- [Changed] `frontend/src/components/layout/Footer.tsx` — all hardcoded gray tokens replaced with semantic: `border-border`, `text-muted-foreground`, `text-foreground`
+- [Changed] `frontend/src/components/layout/MobileNav.tsx` — `bg-white border-gray-100` → `bg-background border-border`; gray text tokens → `text-muted-foreground hover:text-foreground`
+- [Changed] `frontend/src/components/jobs/JobCarousel.tsx` — skeleton and scroll button colors replaced with semantic tokens; `border-gray-100` → `border-border`
+- [Changed] `frontend/src/components/search/SearchBar.tsx` — `bg-gray-100` → `bg-muted`; gray text → `text-muted-foreground` / `text-foreground`
+- [Changed] `frontend/src/components/filters/FilterChip.tsx` — inactive chip border/text → semantic tokens
+- [Changed] `frontend/src/components/search/LocationPill.tsx` — gray border/text/hover → semantic tokens
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — all hardcoded gray colors → semantic tokens; `bg-background text-foreground` added to search input
+- [Changed] `frontend/src/components/jobs/JobCard.tsx` — workplace badges use explicit `dark:bg-*-950 dark:text-*-300` variants since they use raw Tailwind colors; all base card colors → semantic tokens
+
+### Job Store Extension
+
+- [Changed] `frontend/src/store/useJobStore.ts` — added `appliedJobIds: string[]`, `markApplied(id: string)`, `isJobApplied(id: string)` using same persist pattern as `savedJobIds`
+
+### Job Card Hover Overlay
+
+- [Changed] `frontend/src/components/jobs/JobCard.tsx` — added `JobCardHover` sub-component (always-dark `bg-neutral-700`, white text throughout); hover state triggers a `bg-black/50` scrim (z-10) over base card + hover card (z-20) via two separate `AnimatePresence` blocks; added `Share2`, `Globe`, `BookmarkX`, `Flag` icons; actions: Share, Save/Unsave (pink toggle), Mark Applied (green when applied), Apply Directly link, Hide, Report
+- [Added] `AnimatePresence` import from `framer-motion` for enter/exit animations
+- [Added] `useState` import for hover state tracking
+
+### Base Card Redesign (hiring.cafe clone)
+
+- [Changed] `frontend/src/components/jobs/JobCard.tsx` — full base card redesign: width `w-72` → `w-[340px]`; bold navy/dark title; clock icon + timeAgo timestamp (top-right, no bookmark button in header); location as outlined `border-border` pill with `MapPin` icon; workplace/commitment as outlined pills; company logo enlarged to 70×70px (`CompanyLogo size="lg"`); body text (company description, requirements, skills) uses `text-blue-500 dark:text-blue-400`; YOE badge inline within requirements text with `border-purple-400` outline; two-row footer: (Job Posting link | View all) + (Eye+views | Bookmark+saves | Send+applications)
+- [Added] `capitalize()` and `formatCommitment()` helper functions to `JobCard.tsx`
+- [Added] `CompanyLogo` sub-component with `size?: 'sm' | 'lg'` prop for reuse between base card and hover card
+- [Added] `Clock`, `MapPin`, `Eye`, `Send` to lucide-react imports in `JobCard.tsx`
+- [Changed] `frontend/src/components/jobs/JobCarousel.tsx` — `CardSkeleton` width `w-72` → `w-[340px]`; scroll amount 300 → 340 to match new card width
