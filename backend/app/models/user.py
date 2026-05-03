@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, String
+from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -12,6 +12,8 @@ class User(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     clerk_id: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False)
+    name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     saved_jobs: Mapped[list["SavedJob"]] = relationship("SavedJob", back_populates="user")  # noqa: F821

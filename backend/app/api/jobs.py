@@ -52,9 +52,14 @@ def save_job(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
+    service = UserService(db)
     clerk_id = current_user["sub"]
-    email = current_user.get("email", "")
-    UserService(db).save_job(clerk_id, email, job_id)
+    email = service.extract_email_from_claims(current_user)
+    name = service.extract_name_from_claims(current_user)
+    try:
+        service.save_job(clerk_id, email, job_id, name=name)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
     return {"message": "Job saved"}
 
 
@@ -64,9 +69,14 @@ def unsave_job(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
+    service = UserService(db)
     clerk_id = current_user["sub"]
-    email = current_user.get("email", "")
-    UserService(db).unsave_job(clerk_id, email, job_id)
+    email = service.extract_email_from_claims(current_user)
+    name = service.extract_name_from_claims(current_user)
+    try:
+        service.unsave_job(clerk_id, email, job_id, name=name)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
 
 
 @router.post("/{job_id}/hide", status_code=status.HTTP_201_CREATED)
@@ -75,7 +85,12 @@ def hide_job(
     db: Session = Depends(get_db),
     current_user: dict = Depends(get_current_user),
 ):
+    service = UserService(db)
     clerk_id = current_user["sub"]
-    email = current_user.get("email", "")
-    UserService(db).hide_job(clerk_id, email, job_id)
+    email = service.extract_email_from_claims(current_user)
+    name = service.extract_name_from_claims(current_user)
+    try:
+        service.hide_job(clerk_id, email, job_id, name=name)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)) from e
     return {"message": "Job hidden"}

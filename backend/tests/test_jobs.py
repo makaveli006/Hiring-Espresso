@@ -34,4 +34,4 @@ def test_get_job_not_found(mock_service_class):
 
 def test_save_job_requires_auth():
     response = client.post("/api/v1/jobs/some-id/save")
-    assert response.status_code == 403
+    assert response.status_code == 401

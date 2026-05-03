@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.core.logging import setup_logging
 from app.api.jobs import router as jobs_router
 from app.api.users import router as users_router
+from app.api.webhooks import router as webhooks_router
 from app.ingestion.scheduler import start_scheduler, stop_scheduler
 
 setup_logging()
@@ -58,6 +59,7 @@ async def log_requests(request: Request, call_next):
 
 app.include_router(jobs_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
+app.include_router(webhooks_router, prefix="/api/v1")
 
 
 @app.get("/health")

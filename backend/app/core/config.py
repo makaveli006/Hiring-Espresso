@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     database_url: str
     clerk_secret_key: str = ""
     clerk_jwks_url: str = ""
+    clerk_webhook_secret: str = ""
+    clerk_api_base_url: str = "https://api.clerk.com/v1"
+    clerk_webhook_tolerance_seconds: int = 300
     sentry_dsn: str = ""
     cors_origins: str = "http://localhost:5173"
 
