@@ -34,23 +34,23 @@ function LinkedinIcon() {
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-gray-50 px-4 pt-8 pb-6 text-sm text-muted-foreground">
+    <footer className="mt-auto border-t border-border bg-card px-4 pt-8 pb-6 text-sm text-muted-foreground">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <a href="/" className="text-sm font-semibold text-gray-900 hover:text-pink-600 transition-colors">
+          <a href="/" className="text-sm font-semibold text-foreground hover:text-primary transition-colors">
             HiringEspresso
           </a>
 
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
-            <Link to="/about" className="hover:text-gray-900 transition-colors">About</Link>
-            <Link to="/talent" className="hover:text-gray-900 transition-colors">Talent Network</Link>
-            <Link to="/terms" className="hover:text-gray-900 transition-colors">Terms</Link>
-            <Link to="/privacy" className="hover:text-gray-900 transition-colors">Privacy</Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <Link to="/about" className="hover:text-foreground transition-colors">About</Link>
+            <Link to="/talent" className="hover:text-foreground transition-colors">Talent Network</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link to="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
             <a
               href="https://www.reddit.com/r/hiringespresso"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Reddit"
             >
               <RedditIcon />
@@ -59,7 +59,7 @@ export function Footer() {
               href="https://www.linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="LinkedIn"
             >
               <LinkedinIcon />
@@ -67,7 +67,7 @@ export function Footer() {
           </div>
         </div>
 
-        <p className="mt-4 text-center text-xs text-gray-400">
+        <p className="mt-4 text-center text-xs text-muted-foreground">
           © 2026 HiringEspresso. All rights reserved.
         </p>
       </div>

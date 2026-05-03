@@ -31,6 +31,16 @@ export function FilterBar() {
   const activeModal = useUIStore((s) => s.activeFilterModal)
   const filters = useFilterStore((s) => s.filters)
   const hasSelectedDepartments = (filters.department?.length ?? 0) > 0
+  const hasSelectedSalary =
+    filters.salary_min != null ||
+    Boolean(filters.salary_minimum_min) ||
+    Boolean(filters.salary_minimum_max) ||
+    Boolean(filters.salary_minimum_frequency) ||
+    Boolean(filters.salary_maximum_min) ||
+    Boolean(filters.salary_maximum_max) ||
+    Boolean(filters.salary_maximum_frequency) ||
+    Boolean(filters.salary_listed_frequency) ||
+    Boolean(filters.salary_currency)
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
@@ -42,7 +52,8 @@ export function FilterBar() {
               label={chip.label}
               active={
                 activeModal === chip.modal ||
-                (chip.modal === 'departments' && hasSelectedDepartments)
+                (chip.modal === 'departments' && hasSelectedDepartments) ||
+                (chip.modal === 'salary' && hasSelectedSalary)
               }
               onClick={() =>
                 setActiveFilterModal(activeModal === chip.modal ? null : chip.modal)
