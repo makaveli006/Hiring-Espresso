@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Benefits & Perks` modal with independent multi-select options, two-column desktop layout, persisted `benefits_perks` filter state, and chip active highlighting when selections are applied
+- [Created] `frontend/tests/e2e/filters/benefits-modal.spec.ts` — added E2E coverage for Benefits & Perks modal rendering, independent checkbox toggling, and apply persistence behavior
 - [Changed] `frontend/src/components/layout/FilterBar.tsx` — moved company chips (`Company`, `Industry`, `Stage & Funding`, `Size`, `Founding Year`) into the same inline row immediately after `Encouraged to Apply` with an inline separator, removing the separate second company row
 - [Changed] `frontend/tests/e2e/filters/filter-chips.spec.ts` — added ordering assertion to verify `Company` appears directly after `Encouraged to Apply` in the unified filter-chip row
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Encouraged to Apply` modal with multi-select options (Military Veterans, Fair Chance), persisted `encouraged_to_apply` filter state, and job-chip active highlighting when selections are applied
