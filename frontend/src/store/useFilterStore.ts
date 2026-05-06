@@ -7,6 +7,16 @@ interface FilterStore {
   toggleWorkplaceType: (type: string) => void
   toggleCommitment: (type: string) => void
   setCommitments: (commitments: string[]) => void
+  setExperienceSeniority: (seniority: string[]) => void
+  setExperienceRoleType: (roleTypes: string[]) => void
+  setExperienceRanges: (ranges: {
+    roleIndustryMin?: number
+    roleIndustryMax?: number
+    roleIndustryExcludeMissing?: boolean
+    managementMin?: number
+    managementMax?: number
+    managementExcludeMissing?: boolean
+  }) => void
   toggleDepartment: (department: string) => void
   setDepartments: (departments: string[]) => void
   resetFilters: () => void
@@ -43,6 +53,35 @@ export const useFilterStore = create<FilterStore>((set) => ({
       const next = Array.from(new Set(commitments))
       return { filters: { ...state.filters, commitment: next.length ? next : undefined } }
     }),
+
+  setExperienceSeniority: (seniority) =>
+    set((state) => {
+      const next = Array.from(new Set(seniority))
+      return {
+        filters: { ...state.filters, experience_seniority: next.length ? next : undefined },
+      }
+    }),
+
+  setExperienceRoleType: (roleTypes) =>
+    set((state) => {
+      const next = Array.from(new Set(roleTypes))
+      return {
+        filters: { ...state.filters, experience_role_type: next.length ? next : undefined },
+      }
+    }),
+
+  setExperienceRanges: (ranges) =>
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        experience_role_industry_min: ranges.roleIndustryMin,
+        experience_role_industry_max: ranges.roleIndustryMax,
+        experience_role_industry_exclude_missing: ranges.roleIndustryExcludeMissing,
+        experience_management_min: ranges.managementMin,
+        experience_management_max: ranges.managementMax,
+        experience_management_exclude_missing: ranges.managementExcludeMissing,
+      },
+    })),
 
   toggleDepartment: (department) =>
     set((state) => {

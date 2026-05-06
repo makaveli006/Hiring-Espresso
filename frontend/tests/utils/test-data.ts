@@ -45,3 +45,12 @@ export const COMMITMENT_TYPES = [
   'Seasonal',
   'Volunteer',
 ] as const
+
+export const EXPERIENCE_SENIORITY_TYPES = [
+  'No Prior Experience Required',
+  'Entry Level',
+  'Mid Level',
+  'Senior Level',
+] as const
+
+export const EXPERIENCE_ROLE_TYPES = ['Individual Contributor', 'People Manager'] as const

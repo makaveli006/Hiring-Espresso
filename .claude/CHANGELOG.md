@@ -6,6 +6,12 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — experience slider cards no longer expand on plain thumb click; expansion now triggers only after actual range change from defaults (`min > 0` or `max < 20`)
+- [Changed] `frontend/tests/e2e/filters/experience-modal.spec.ts` — added coverage for non-expanding thumb clicks at default and expansion thresholds (`0→1` / `20→19`)
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — replaced native overlapping range-pointer interaction with explicit full-circle thumb drag handlers (`pointerdown/move/up` on visible thumb buttons) so users can drag from any point on the bubble and both min/max thumbs move smoothly and independently
+- [Changed] `frontend/src/index.css` — increased experience slider thumb hit-area (`40px`) and added near-transparent painted thumb background so pointer cursor appears reliably across the full circular thumb edge/arc while dragging
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — standardized typography in Salary, Commitment, and Experience modals to match Departments (`text-lg` modal title; `text-sm` for body/labels/inputs/actions with modal `font-sans`)
+
 - [Created] `.claude/specs/job-data-ingestion.md` — comprehensive spec for replacing dummy job data with a real 3-tier ingestion pipeline (Arbeitnow/Remotive → Greenhouse/Lever ATS → Exa/Firecrawl/Brave Search scraping) using OpenAI API for AI normalization
 
 ### Job Data Ingestion Pipeline

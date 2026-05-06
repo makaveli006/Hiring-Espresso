@@ -1,5 +1,18 @@
 # Hiring Espresso — HiringCafe Clone
 
+## Git Branching — CRITICAL
+
+**Never merge directly into `main`.** `main` is the production branch and is only updated via release or hotfix merges.
+
+- All feature branches must be created from `develop` and merged back into `develop`
+- `develop` → QA/staging; `main` → production only
+
+```
+feature/xxx  →  develop  →  (release branch)  →  main
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -147,6 +160,11 @@ Do **not** wait until the end of a session — update CHANGELOG.md immediately a
 - All API calls go through TanStack Query hooks in `src/hooks/`
 - Zod schemas validate all API responses and env vars at startup
 - Framer Motion for card entrance animations and modal transitions
+- Modal typography standard (all modals):
+  - Font family: `font-sans` (`Geist Variable`)
+  - Modal title: `text-lg` (18px)
+  - Modal body text, labels, inputs, action text: `text-sm` (14px)
+  - Small selected chips/tags inside modals: `text-xs` (12px)
 - **Dark mode colors**: Never use inline `style={{ color: '...' }}` for text — it overrides Tailwind's dark mode classes. Always use semantic tokens: `text-foreground` (headings / dark text that becomes white in dark mode), `text-muted-foreground` (body / gray text). These auto-switch via CSS variables. Brand/accent colors (e.g. `#DD6B20`, `#319795`) may use `text-[#hex]` with a `dark:` variant.
 
 ### Backend

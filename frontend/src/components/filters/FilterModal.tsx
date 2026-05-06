@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import {
   ChevronDown,
   ChevronRight,
@@ -7,6 +7,7 @@ import {
   Clock3,
   DollarSign,
   EyeOff,
+  RotateCcw,
   Search,
   SlidersHorizontal,
   X,
@@ -27,6 +28,24 @@ const COMMITMENT_OPTIONS = [
   { label: 'Seasonal', value: 'seasonal' },
   { label: 'Volunteer', value: 'volunteer' },
 ] as const
+const EXPERIENCE_SENIORITY_OPTIONS = [
+  { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
+  { label: 'Entry Level', value: 'entry_level' },
+  { label: 'Mid Level', value: 'mid_level' },
+  { label: 'Senior Level', value: 'senior_level' },
+] as const
+const EXPERIENCE_ROLE_TYPE_OPTIONS = [
+  { label: 'Individual Contributor', value: 'individual_contributor' },
+  { label: 'People Manager', value: 'people_manager' },
+] as const
+const EXPERIENCE_SLIDER_MIN = 0
+const EXPERIENCE_SLIDER_MAX = 20
+const EXPERIENCE_SENIORITY_RANGES: Record<string, { min: number; max: number | null }> = {
+  no_prior_experience_required: { min: 0, max: 0 },
+  entry_level: { min: 0, max: 2 },
+  mid_level: { min: 3, max: 5 },
+  senior_level: { min: 6, max: null },
+}
 const PHYSICAL_POSITIONS = ['Sitting / Desk Jobs', 'Active']
 const PHYSICAL_ENVIRONMENTS = ['Office', 'Outdoor', 'Vehicle', 'Industrial', 'Customer-Facing']
 const LABOR_INTENSITY = ['Low', 'Medium', 'High']
@@ -145,6 +164,19 @@ interface FrequencySelectProps {
   ariaLabel: string
 }
 
+interface ExperienceRangeSliderProps {
+  title: string
+  expanded: boolean
+  minValue: number
+  maxValue: number
+  excludeMissing: boolean
+  onChange: (minValue: number, maxValue: number) => void
+  onExcludeMissingChange: (checked: boolean) => void
+  onFirstInteraction: () => void
+  onReset: () => void
+  testId: string
+}
+
 function CheckGroup({ title, options, selected, onToggle }: CheckGroupProps) {
   return (
     <div className="mb-6">
@@ -179,7 +211,7 @@ function MoneyInput({ value, onChange, placeholder, ariaLabel }: MoneyInputProps
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-12 w-full rounded-xl border border-gray-300 bg-white pl-8 pr-3 text-base text-gray-900 placeholder:text-gray-500 outline-none focus:border-pink-500"
+        className="h-12 w-full rounded-xl border border-gray-300 bg-white pl-8 pr-3 text-sm text-gray-900 placeholder:text-gray-500 outline-none focus:border-pink-500"
       />
     </div>
   )
@@ -192,7 +224,7 @@ function FrequencySelect({ value, onChange, ariaLabel }: FrequencySelectProps) {
         aria-label={ariaLabel}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-12 w-full appearance-none rounded-xl border border-gray-300 bg-white px-3 pr-9 text-base text-gray-900 outline-none focus:border-pink-500"
+        className="h-12 w-full appearance-none rounded-xl border border-gray-300 bg-white px-3 pr-9 text-sm text-gray-900 outline-none focus:border-pink-500"
       >
         {SALARY_FREQUENCY_OPTIONS.map((option) => (
           <option key={option} value={option}>
@@ -212,20 +244,255 @@ function parseSalaryAmount(value: string): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined
 }
 
+function ExperienceRangeSlider({
+  title,
+  expanded,
+  minValue,
+  maxValue,
+  excludeMissing,
+  onChange,
+  onExcludeMissingChange,
+  onFirstInteraction,
+  onReset,
+  testId,
+}: ExperienceRangeSliderProps) {
+  const range = EXPERIENCE_SLIDER_MAX - EXPERIENCE_SLIDER_MIN
+  const left = ((minValue - EXPERIENCE_SLIDER_MIN) / range) * 100
+  const right = ((maxValue - EXPERIENCE_SLIDER_MIN) / range) * 100
+  const trackRef = useRef<HTMLDivElement | null>(null)
+  const draggingThumbRef = useRef<'min' | 'max' | null>(null)
+
+  const clampSliderValue = (rawValue: number) =>
+    Math.max(EXPERIENCE_SLIDER_MIN, Math.min(EXPERIENCE_SLIDER_MAX, rawValue))
+
+  const maybeExpand = (nextMinValue: number, nextMaxValue: number) => {
+    if (expanded) return
+    if (nextMinValue > EXPERIENCE_SLIDER_MIN || nextMaxValue < EXPERIENCE_SLIDER_MAX) {
+      onFirstInteraction()
+    }
+  }
+
+  const updateValueFromPointer = (clientX: number, thumb: 'min' | 'max') => {
+    if (!trackRef.current) return
+    const rect = trackRef.current.getBoundingClientRect()
+    if (rect.width <= 0) return
+
+    const clampedX = Math.max(rect.left, Math.min(clientX, rect.right))
+    const ratio = (clampedX - rect.left) / rect.width
+    const nextRaw = EXPERIENCE_SLIDER_MIN + ratio * range
+    const snapped = clampSliderValue(Math.round(nextRaw))
+
+    if (thumb === 'min') {
+      const nextMinValue = Math.min(snapped, maxValue)
+      maybeExpand(nextMinValue, maxValue)
+      onChange(nextMinValue, maxValue)
+      return
+    }
+
+    const nextMaxValue = Math.max(snapped, minValue)
+    maybeExpand(minValue, nextMaxValue)
+    onChange(minValue, nextMaxValue)
+  }
+
+  const onThumbPointerDown =
+    (thumb: 'min' | 'max') => (event: ReactPointerEvent<HTMLButtonElement>) => {
+      event.preventDefault()
+      draggingThumbRef.current = thumb
+      event.currentTarget.setPointerCapture(event.pointerId)
+      updateValueFromPointer(event.clientX, thumb)
+    }
+
+  const onThumbPointerMove =
+    (thumb: 'min' | 'max') => (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (draggingThumbRef.current !== thumb) return
+      updateValueFromPointer(event.clientX, thumb)
+    }
+
+  const onThumbPointerEnd = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    draggingThumbRef.current = null
+  }
+
+  return (
+    <div
+      className={`overflow-x-hidden rounded-2xl border bg-white px-5 py-5 shadow-sm ${
+        expanded ? 'border-pink-300 shadow-pink-100' : 'border-gray-300'
+      }`}
+      data-testid={testId}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-semibold text-gray-800">{title}</p>
+        {expanded ? (
+          <button
+            type="button"
+            onClick={onReset}
+            className="shrink-0 text-red-500 hover:text-red-600"
+            aria-label={`Reset ${title}`}
+            data-testid={`${testId}-reset`}
+          >
+            <RotateCcw className="h-5 w-5" />
+          </button>
+        ) : null}
+      </div>
+      {expanded ? (
+        <>
+          <label className="mt-4 flex items-center gap-3">
+            <Checkbox
+              checked={excludeMissing}
+              onCheckedChange={(checked) => onExcludeMissingChange(checked === true)}
+              className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+              data-testid={`${testId}-exclude-missing`}
+            />
+            <span className="text-sm leading-tight text-gray-800">
+              Exclude jobs that haven't mentioned this
+            </span>
+            <CircleHelp className="h-6 w-6 text-gray-500 sm:h-4 sm:w-4" />
+          </label>
+          <p
+            className="mt-5 text-sm font-semibold leading-none text-pink-500"
+            data-testid={`${testId}-range-label`}
+          >
+            {minValue} - {maxValue} years
+          </p>
+        </>
+      ) : null}
+      <div className="mt-7 px-4">
+        <div ref={trackRef} className="relative h-10" data-testid={`${testId}-track`}>
+          <div className="pointer-events-none absolute top-1/2 h-1 w-full -translate-y-1/2 rounded-full bg-pink-200" />
+          <div
+            className="pointer-events-none absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-pink-500"
+            style={{ left: `${left}%`, width: `${Math.max(right - left, 0)}%` }}
+          />
+          <button
+            type="button"
+            className="absolute top-1/2 z-30 h-10 w-10 -translate-y-1/2 -translate-x-1/2 cursor-grab touch-none rounded-full active:cursor-grabbing"
+            style={{ left: `${left}%` }}
+            onPointerDown={onThumbPointerDown('min')}
+            onPointerMove={onThumbPointerMove('min')}
+            onPointerUp={onThumbPointerEnd}
+            onPointerCancel={onThumbPointerEnd}
+            aria-label={`${title} minimum years thumb`}
+            data-testid={`${testId}-min-thumb`}
+          >
+            <span className="block h-8 w-8 rounded-full bg-pink-300 shadow-sm" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="absolute top-1/2 z-40 h-10 w-10 -translate-y-1/2 -translate-x-1/2 cursor-grab touch-none rounded-full active:cursor-grabbing"
+            style={{ left: `${right}%` }}
+            onPointerDown={onThumbPointerDown('max')}
+            onPointerMove={onThumbPointerMove('max')}
+            onPointerUp={onThumbPointerEnd}
+            onPointerCancel={onThumbPointerEnd}
+            aria-label={`${title} maximum years thumb`}
+            data-testid={`${testId}-max-thumb`}
+          >
+            <span className="block h-8 w-8 rounded-full bg-pink-300 shadow-sm" aria-hidden="true" />
+          </button>
+          <input
+            type="range"
+            min={EXPERIENCE_SLIDER_MIN}
+            max={EXPERIENCE_SLIDER_MAX}
+            value={minValue}
+            onChange={(event) => {
+              const next = Math.min(Number(event.target.value), maxValue)
+              maybeExpand(next, maxValue)
+              onChange(next, maxValue)
+            }}
+            className="experience-range-input absolute inset-0 z-10 h-10 w-full opacity-0"
+            aria-label={`${title} minimum years`}
+            data-testid={`${testId}-min`}
+          />
+          <input
+            type="range"
+            min={EXPERIENCE_SLIDER_MIN}
+            max={EXPERIENCE_SLIDER_MAX}
+            value={maxValue}
+            onChange={(event) => {
+              const next = Math.max(Number(event.target.value), minValue)
+              maybeExpand(minValue, next)
+              onChange(minValue, next)
+            }}
+            className="experience-range-input absolute inset-0 z-10 h-10 w-full opacity-0"
+            aria-label={`${title} maximum years`}
+            data-testid={`${testId}-max`}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function getYoeBoundsFromSeniority(seniorityValues: string[]) {
+  if (seniorityValues.length === 0) {
+    return { yoeMin: undefined, yoeMax: undefined }
+  }
+
+  const ranges = seniorityValues
+    .map((value) => EXPERIENCE_SENIORITY_RANGES[value])
+    .filter((range): range is { min: number; max: number | null } => Boolean(range))
+
+  if (ranges.length === 0) {
+    return { yoeMin: undefined, yoeMax: undefined }
+  }
+
+  const yoeMin = Math.min(...ranges.map((range) => range.min))
+  if (ranges.some((range) => range.max === null)) {
+    return { yoeMin, yoeMax: undefined }
+  }
+
+  const yoeMax = Math.max(...ranges.map((range) => range.max as number))
+  return { yoeMin, yoeMax }
+}
+
+function normalizeExperienceRange(minValue: number, maxValue: number) {
+  if (minValue === EXPERIENCE_SLIDER_MIN && maxValue === EXPERIENCE_SLIDER_MAX) {
+    return { minValue: undefined, maxValue: undefined }
+  }
+
+  return { minValue, maxValue }
+}
+
 export function FilterModal() {
   const activeModal = useUIStore((s) => s.activeFilterModal)
   const open =
     activeModal === 'locations' ||
     activeModal === 'departments' ||
     activeModal === 'salary' ||
-    activeModal === 'commitment'
+    activeModal === 'commitment' ||
+    activeModal === 'experience'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
-  const { filters, setFilter, toggleWorkplaceType, toggleDepartment, setDepartments, setCommitments } =
-    useFilterStore()
+  const {
+    filters,
+    setFilter,
+    toggleWorkplaceType,
+    toggleDepartment,
+    setDepartments,
+    setCommitments,
+    setExperienceSeniority,
+    setExperienceRoleType,
+    setExperienceRanges,
+  } = useFilterStore()
 
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [selectedExperienceSeniority, setSelectedExperienceSeniority] = useState<string[]>([])
+  const [selectedExperienceRoleType, setSelectedExperienceRoleType] = useState<string[]>([])
+  const [roleIndustryRange, setRoleIndustryRange] = useState<[number, number]>([
+    EXPERIENCE_SLIDER_MIN,
+    EXPERIENCE_SLIDER_MAX,
+  ])
+  const [isRoleIndustryExpanded, setIsRoleIndustryExpanded] = useState(false)
+  const [roleIndustryExcludeMissing, setRoleIndustryExcludeMissing] = useState(false)
+  const [managementRange, setManagementRange] = useState<[number, number]>([
+    EXPERIENCE_SLIDER_MIN,
+    EXPERIENCE_SLIDER_MAX,
+  ])
+  const [isManagementExpanded, setIsManagementExpanded] = useState(false)
+  const [managementExcludeMissing, setManagementExcludeMissing] = useState(false)
 
   const [isSalaryAdvancedMode, setIsSalaryAdvancedMode] = useState(false)
   const [hideUndisclosedSalaries, setHideUndisclosedSalaries] = useState(false)
@@ -257,6 +524,43 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'experience') return
+    const roleIndustryHasAdvancedState =
+      filters.experience_role_industry_min != null ||
+      filters.experience_role_industry_max != null ||
+      Boolean(filters.experience_role_industry_exclude_missing)
+    const managementHasAdvancedState =
+      filters.experience_management_min != null ||
+      filters.experience_management_max != null ||
+      Boolean(filters.experience_management_exclude_missing)
+
+    setSelectedExperienceSeniority(filters.experience_seniority ?? [])
+    setSelectedExperienceRoleType(filters.experience_role_type ?? [])
+    setRoleIndustryRange([
+      filters.experience_role_industry_min ?? EXPERIENCE_SLIDER_MIN,
+      filters.experience_role_industry_max ?? EXPERIENCE_SLIDER_MAX,
+    ])
+    setIsRoleIndustryExpanded(roleIndustryHasAdvancedState)
+    setRoleIndustryExcludeMissing(Boolean(filters.experience_role_industry_exclude_missing))
+    setManagementRange([
+      filters.experience_management_min ?? EXPERIENCE_SLIDER_MIN,
+      filters.experience_management_max ?? EXPERIENCE_SLIDER_MAX,
+    ])
+    setIsManagementExpanded(managementHasAdvancedState)
+    setManagementExcludeMissing(Boolean(filters.experience_management_exclude_missing))
+  }, [
+    activeModal,
+    filters.experience_management_exclude_missing,
+    filters.experience_management_max,
+    filters.experience_management_min,
+    filters.experience_role_industry_exclude_missing,
+    filters.experience_role_industry_max,
+    filters.experience_role_industry_min,
+    filters.experience_role_type,
+    filters.experience_seniority,
+  ])
 
   useEffect(() => {
     if (activeModal !== 'salary') return
@@ -348,6 +652,34 @@ export function FilterModal() {
     setCommitments([])
   }
 
+  const clearAllExperience = () => {
+    setSelectedExperienceSeniority([])
+    setSelectedExperienceRoleType([])
+    setRoleIndustryRange([EXPERIENCE_SLIDER_MIN, EXPERIENCE_SLIDER_MAX])
+    setIsRoleIndustryExpanded(false)
+    setRoleIndustryExcludeMissing(false)
+    setManagementRange([EXPERIENCE_SLIDER_MIN, EXPERIENCE_SLIDER_MAX])
+    setIsManagementExpanded(false)
+    setManagementExcludeMissing(false)
+    setExperienceSeniority([])
+    setExperienceRoleType([])
+    setExperienceRanges({})
+    setFilter('yoe_min', undefined)
+    setFilter('yoe_max', undefined)
+  }
+
+  const resetRoleIndustryCard = () => {
+    setRoleIndustryRange([EXPERIENCE_SLIDER_MIN, EXPERIENCE_SLIDER_MAX])
+    setRoleIndustryExcludeMissing(false)
+    setIsRoleIndustryExpanded(false)
+  }
+
+  const resetManagementCard = () => {
+    setManagementRange([EXPERIENCE_SLIDER_MIN, EXPERIENCE_SLIDER_MAX])
+    setManagementExcludeMissing(false)
+    setIsManagementExpanded(false)
+  }
+
   const removeDepartment = (department: string) => {
     setDepartments(selectedDepartments.filter((item) => item !== department))
   }
@@ -383,6 +715,36 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'experience') {
+      const { yoeMin, yoeMax } = getYoeBoundsFromSeniority(selectedExperienceSeniority)
+      const normalizedRoleIndustry = normalizeExperienceRange(
+        roleIndustryRange[0],
+        roleIndustryRange[1]
+      )
+      const normalizedManagement = normalizeExperienceRange(
+        managementRange[0],
+        managementRange[1]
+      )
+
+      setExperienceSeniority(selectedExperienceSeniority)
+      setExperienceRoleType(selectedExperienceRoleType)
+      setExperienceRanges({
+        roleIndustryMin: normalizedRoleIndustry.minValue,
+        roleIndustryMax: normalizedRoleIndustry.maxValue,
+        roleIndustryExcludeMissing:
+          roleIndustryExcludeMissing || normalizedRoleIndustry.minValue != null || normalizedRoleIndustry.maxValue != null
+            ? roleIndustryExcludeMissing
+            : undefined,
+        managementMin: normalizedManagement.minValue,
+        managementMax: normalizedManagement.maxValue,
+        managementExcludeMissing:
+          managementExcludeMissing || normalizedManagement.minValue != null || normalizedManagement.maxValue != null
+            ? managementExcludeMissing
+            : undefined,
+      })
+      setFilter('yoe_min', yoeMin)
+      setFilter('yoe_max', yoeMax)
+    }
     if (activeModal === 'salary') {
       const trimmedMinimumMin = minimumCompMin.trim()
       const trimmedMinimumMax = minimumCompMax.trim()
@@ -417,12 +779,126 @@ export function FilterModal() {
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && setActiveFilterModal(null)}>
       <DialogContent
         className={`flex max-h-[88vh] w-[95vw] max-w-[680px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[680px] ${
-          activeModal === 'departments' || activeModal === 'salary' || activeModal === 'commitment'
+          activeModal === 'departments' ||
+          activeModal === 'salary' ||
+          activeModal === 'commitment' ||
+          activeModal === 'experience'
             ? 'bg-white text-gray-900'
             : ''
         }`}
       >
-        {activeModal === 'commitment' ? (
+        {activeModal === 'experience' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Experience</DialogTitle>
+            </DialogHeader>
+
+            <div
+              data-testid="experience-scroll-area"
+              className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-x-none px-6 py-6 [touch-action:pan-y]"
+            >
+              <section>
+                <h3 className="mb-4 text-sm font-semibold leading-none text-gray-900">
+                  Seniority
+                </h3>
+                <div className="space-y-4">
+                  {EXPERIENCE_SENIORITY_OPTIONS.map((option) => (
+                    <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                      <Checkbox
+                        checked={selectedExperienceSeniority.includes(option.value)}
+                        onCheckedChange={() =>
+                          setSelectedExperienceSeniority((current) =>
+                            current.includes(option.value)
+                              ? current.filter((item) => item !== option.value)
+                              : [...current, option.value]
+                          )
+                        }
+                        className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                      />
+                      <span className="text-sm leading-tight text-gray-700">
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-10">
+                <div className="mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold leading-none text-gray-900">
+                    Role Type
+                  </h3>
+                  <CircleHelp className="h-6 w-6 text-gray-500 sm:h-4 sm:w-4" />
+                </div>
+                <div className="space-y-4">
+                  {EXPERIENCE_ROLE_TYPE_OPTIONS.map((option) => (
+                    <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                      <Checkbox
+                        checked={selectedExperienceRoleType.includes(option.value)}
+                        onCheckedChange={() =>
+                          setSelectedExperienceRoleType((current) =>
+                            current.includes(option.value)
+                              ? current.filter((item) => item !== option.value)
+                              : [...current, option.value]
+                          )
+                        }
+                        className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                      />
+                      <span className="text-sm leading-tight text-gray-700">
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-10 space-y-6">
+                <ExperienceRangeSlider
+                  title="Years of Experience: Role & Industry"
+                  expanded={isRoleIndustryExpanded}
+                  minValue={roleIndustryRange[0]}
+                  maxValue={roleIndustryRange[1]}
+                  onChange={(minValue, maxValue) => setRoleIndustryRange([minValue, maxValue])}
+                  excludeMissing={roleIndustryExcludeMissing}
+                  onExcludeMissingChange={setRoleIndustryExcludeMissing}
+                  onFirstInteraction={() => setIsRoleIndustryExpanded(true)}
+                  onReset={resetRoleIndustryCard}
+                  testId="experience-role-industry-slider"
+                />
+                <ExperienceRangeSlider
+                  title="Years of Experience: Management & Leadership"
+                  expanded={isManagementExpanded}
+                  minValue={managementRange[0]}
+                  maxValue={managementRange[1]}
+                  onChange={(minValue, maxValue) => setManagementRange([minValue, maxValue])}
+                  excludeMissing={managementExcludeMissing}
+                  onExcludeMissingChange={setManagementExcludeMissing}
+                  onFirstInteraction={() => setIsManagementExpanded(true)}
+                  onReset={resetManagementCard}
+                  testId="experience-management-slider"
+                />
+              </section>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={clearAllExperience}
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                >
+                  Clear all
+                </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'commitment' ? (
           <>
             <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
               <DialogTitle className="text-lg font-semibold text-gray-900">Commitment</DialogTitle>
@@ -443,7 +919,7 @@ export function FilterModal() {
                       }
                       className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
                     />
-                    <span className="text-base text-gray-800">{option.label}</span>
+                    <span className="text-sm text-gray-800">{option.label}</span>
                   </label>
                 ))}
               </div>
@@ -459,7 +935,7 @@ export function FilterModal() {
                   Clear all
                 </button>
                 <Button
-                  className="h-12 w-full rounded-md bg-pink-500 text-lg font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}
                 >
                   Apply
@@ -507,7 +983,7 @@ export function FilterModal() {
 
               {!isSalaryAdvancedMode ? (
                 <div className="mt-4 rounded-2xl border border-gray-200 p-5">
-                  <h3 className="text-lg font-semibold text-gray-900">Desired Compensation</h3>
+                  <h3 className="text-sm font-semibold text-gray-900">Desired Compensation</h3>
 
                   <div className="mt-3 space-y-3">
                     <MoneyInput
@@ -526,7 +1002,7 @@ export function FilterModal() {
               ) : (
                 <div className="mt-4 space-y-5">
                   <div className="rounded-2xl border border-gray-200 p-5">
-                    <h3 className="text-lg font-semibold text-gray-900">Minimum Compensation</h3>
+                    <h3 className="text-sm font-semibold text-gray-900">Minimum Compensation</h3>
                     <p className="mt-6 text-sm text-gray-600">
                       If a job offers $X - $Y, this controls the $X part.
                     </p>
@@ -538,7 +1014,7 @@ export function FilterModal() {
                         placeholder="No Min"
                         ariaLabel="Minimum compensation minimum amount"
                       />
-                      <span className="text-lg text-gray-500">-</span>
+                      <span className="text-sm text-gray-500">-</span>
                       <MoneyInput
                         value={minimumCompMax}
                         onChange={setMinimumCompMax}
@@ -557,7 +1033,7 @@ export function FilterModal() {
                   </div>
 
                   <div className="rounded-2xl border border-gray-200 p-5">
-                    <h3 className="text-lg font-semibold text-gray-900">Maximum Compensation</h3>
+                    <h3 className="text-sm font-semibold text-gray-900">Maximum Compensation</h3>
                     <p className="mt-6 text-sm text-gray-600">
                       If a job offers $X - $Y, this controls the $Y part.
                     </p>
@@ -569,7 +1045,7 @@ export function FilterModal() {
                         placeholder="No Min"
                         ariaLabel="Maximum compensation minimum amount"
                       />
-                      <span className="text-lg text-gray-500">-</span>
+                      <span className="text-sm text-gray-500">-</span>
                       <MoneyInput
                         value={maximumCompMax}
                         onChange={setMaximumCompMax}
@@ -593,7 +1069,7 @@ export function FilterModal() {
                 <div data-testid="listed-frequency-group">
                   <div className="mb-4 flex items-center gap-2 text-gray-800">
                     <Clock3 className="h-5 w-5 text-pink-500" />
-                    <span className="text-lg font-semibold">Listed Frequency</span>
+                    <span className="text-sm font-semibold">Listed Frequency</span>
                   </div>
 
                   <div className="flex flex-wrap gap-3">
@@ -617,7 +1093,7 @@ export function FilterModal() {
                 <div>
                   <div className="mb-4 flex items-center gap-2 text-gray-800">
                     <DollarSign className="h-5 w-5 text-pink-500" />
-                    <span className="text-lg font-semibold">Listed Currency</span>
+                    <span className="text-sm font-semibold">Listed Currency</span>
                   </div>
 
                   <div ref={listedCurrencyRef} className="relative">
@@ -637,7 +1113,7 @@ export function FilterModal() {
                           setListedCurrencySearch(event.target.value)
                         }}
                         placeholder="Any"
-                        className={`h-12 w-full text-base outline-none placeholder:text-pink-500 ${
+                        className={`h-12 w-full text-sm outline-none placeholder:text-pink-500 ${
                           listedCurrency === 'Any' && !listedCurrencyOpen && !listedCurrencySearch
                             ? 'text-pink-500'
                             : 'text-gray-900'
@@ -719,7 +1195,7 @@ export function FilterModal() {
                   Clear all
                 </button>
                 <Button
-                  className="h-12 w-full rounded-md bg-pink-500 text-lg font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}
                 >
                   Apply

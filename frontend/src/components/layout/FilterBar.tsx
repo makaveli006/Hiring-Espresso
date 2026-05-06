@@ -32,6 +32,17 @@ export function FilterBar() {
   const filters = useFilterStore((s) => s.filters)
   const hasSelectedDepartments = (filters.department?.length ?? 0) > 0
   const hasSelectedCommitment = (filters.commitment?.length ?? 0) > 0
+  const hasSelectedExperience =
+    (filters.experience_seniority?.length ?? 0) > 0 ||
+    (filters.experience_role_type?.length ?? 0) > 0 ||
+    filters.experience_role_industry_min != null ||
+    filters.experience_role_industry_max != null ||
+    Boolean(filters.experience_role_industry_exclude_missing) ||
+    filters.experience_management_min != null ||
+    filters.experience_management_max != null ||
+    Boolean(filters.experience_management_exclude_missing) ||
+    filters.yoe_min != null ||
+    filters.yoe_max != null
   const hasSelectedSalary =
     filters.salary_min != null ||
     Boolean(filters.salary_minimum_min) ||
@@ -55,6 +66,7 @@ export function FilterBar() {
                 activeModal === chip.modal ||
                 (chip.modal === 'departments' && hasSelectedDepartments) ||
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
+                (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary)
               }
               onClick={() =>
