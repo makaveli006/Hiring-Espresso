@@ -53,6 +53,8 @@ export function FilterBar() {
     Boolean(filters.salary_maximum_frequency) ||
     Boolean(filters.salary_listed_frequency) ||
     Boolean(filters.salary_currency)
+  const hasSelectedFoundingYear =
+    filters.founding_year_min != null || filters.founding_year_max != null
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
@@ -83,7 +85,10 @@ export function FilterBar() {
             <FilterChip
               key={chip.modal}
               label={chip.label}
-              active={activeModal === chip.modal}
+              active={
+                activeModal === chip.modal ||
+                (chip.modal === 'founding' && hasSelectedFoundingYear)
+              }
               variant="company"
               onClick={() =>
                 setActiveFilterModal(activeModal === chip.modal ? null : chip.modal)

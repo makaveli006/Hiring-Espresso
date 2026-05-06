@@ -244,6 +244,16 @@ function parseSalaryAmount(value: string): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined
 }
 
+function parseFoundingYearInput(value: string, currentYear: number): number | undefined {
+  const normalized = value.trim()
+  if (!normalized) return undefined
+  if (!/^\d{4}$/.test(normalized)) return undefined
+  const parsed = Number(normalized)
+  if (!Number.isInteger(parsed)) return undefined
+  if (parsed > currentYear) return undefined
+  return parsed
+}
+
 function ExperienceRangeSlider({
   title,
   expanded,
@@ -462,7 +472,8 @@ export function FilterModal() {
     activeModal === 'departments' ||
     activeModal === 'salary' ||
     activeModal === 'commitment' ||
-    activeModal === 'experience'
+    activeModal === 'experience' ||
+    activeModal === 'founding'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -479,6 +490,8 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [foundingYearMinInput, setFoundingYearMinInput] = useState('')
+  const [foundingYearMaxInput, setFoundingYearMaxInput] = useState('')
   const [selectedExperienceSeniority, setSelectedExperienceSeniority] = useState<string[]>([])
   const [selectedExperienceRoleType, setSelectedExperienceRoleType] = useState<string[]>([])
   const [roleIndustryRange, setRoleIndustryRange] = useState<[number, number]>([
@@ -512,6 +525,19 @@ export function FilterModal() {
 
   const workplaceSelected = filters.workplace_type?.map((t) => t) ?? []
   const selectedDepartments = filters.department ?? []
+  const currentYear = new Date().getFullYear()
+  const parsedFoundingYearMin = parseFoundingYearInput(foundingYearMinInput, currentYear)
+  const parsedFoundingYearMax = parseFoundingYearInput(foundingYearMaxInput, currentYear)
+  const hasFoundingYearMinInput = foundingYearMinInput.trim().length > 0
+  const hasFoundingYearMaxInput = foundingYearMaxInput.trim().length > 0
+  const isFoundingYearMinValid = !hasFoundingYearMinInput || parsedFoundingYearMin != null
+  const isFoundingYearMaxValid = !hasFoundingYearMaxInput || parsedFoundingYearMax != null
+  const isFoundingYearRangeValid =
+    parsedFoundingYearMin == null ||
+    parsedFoundingYearMax == null ||
+    parsedFoundingYearMin <= parsedFoundingYearMax
+  const canApplyFoundingYear =
+    isFoundingYearMinValid && isFoundingYearMaxValid && isFoundingYearRangeValid
 
   useEffect(() => {
     if (activeModal === 'departments') {
@@ -524,6 +550,16 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'founding') return
+    setFoundingYearMinInput(
+      filters.founding_year_min != null ? String(filters.founding_year_min) : ''
+    )
+    setFoundingYearMaxInput(
+      filters.founding_year_max != null ? String(filters.founding_year_max) : ''
+    )
+  }, [activeModal, filters.founding_year_max, filters.founding_year_min])
 
   useEffect(() => {
     if (activeModal !== 'experience') return
@@ -771,6 +807,11 @@ export function FilterModal() {
         listedFrequency === 'Any' ? undefined : listedFrequency
       )
       setFilter('salary_currency', listedCurrency === 'Any' ? undefined : listedCurrency)
+    }
+    if (activeModal === 'founding') {
+      if (!canApplyFoundingYear) return
+      setFilter('founding_year_min', parsedFoundingYearMin)
+      setFilter('founding_year_max', parsedFoundingYearMax)
     }
     setActiveFilterModal(null)
   }
@@ -1197,6 +1238,64 @@ export function FilterModal() {
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'founding' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Founding Year</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 px-6 py-6">
+              <h3 className="text-sm font-semibold text-gray-900">Enter Founding Year Range</h3>
+
+              <div className="mt-3 flex items-center gap-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  aria-label="Founding year minimum"
+                  placeholder="Min Year"
+                  value={foundingYearMinInput}
+                  onChange={(event) =>
+                    setFoundingYearMinInput(event.target.value.replace(/\D/g, '').slice(0, 4))
+                  }
+                  className={`h-12 w-[120px] rounded-md border px-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none ${
+                    hasFoundingYearMinInput && !isFoundingYearMinValid
+                      ? 'border-red-500'
+                      : 'border-gray-300 focus:border-gray-900'
+                  }`}
+                  data-testid="founding-year-min-input"
+                />
+                <span className="text-sm text-gray-500">to</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  aria-label="Founding year maximum"
+                  placeholder="Present"
+                  value={foundingYearMaxInput}
+                  onChange={(event) =>
+                    setFoundingYearMaxInput(event.target.value.replace(/\D/g, '').slice(0, 4))
+                  }
+                  className={`h-12 w-[120px] rounded-md border px-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none ${
+                    (hasFoundingYearMaxInput && !isFoundingYearMaxValid) || !isFoundingYearRangeValid
+                      ? 'border-red-500'
+                      : 'border-gray-300 focus:border-gray-900'
+                  }`}
+                  data-testid="founding-year-max-input"
+                />
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                  disabled={!canApplyFoundingYear}
                 >
                   Apply
                 </Button>

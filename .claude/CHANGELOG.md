@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated Founding Year modal with strict 4-digit validation, open-ended `Present` max behavior (`founding_year_max` undefined), persisted filter state, and active company-chip highlighting
+- [Created] `frontend/tests/e2e/filters/founding-year-modal.spec.ts` — added E2E coverage for Founding Year modal open/render, valid apply persistence, open-ended max handling, and invalid-range apply disabling
 - [Changed] `frontend/src/components/filters/FilterModal.tsx` — experience slider cards no longer expand on plain thumb click; expansion now triggers only after actual range change from defaults (`min > 0` or `max < 20`)
 - [Changed] `frontend/tests/e2e/filters/experience-modal.spec.ts` — added coverage for non-expanding thumb clicks at default and expansion thresholds (`0→1` / `20→19`)
 - [Changed] `frontend/src/components/filters/FilterModal.tsx` — replaced native overlapping range-pointer interaction with explicit full-circle thumb drag handlers (`pointerdown/move/up` on visible thumb buttons) so users can drag from any point on the bubble and both min/max thumbs move smoothly and independently
