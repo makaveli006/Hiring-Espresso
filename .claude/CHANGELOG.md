@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Size` company modal with `All` default/exclusive behavior, full selection list, persisted `company_size` filter state, and active chip highlighting when specific size ranges are applied
+- [Created] `frontend/tests/e2e/filters/size-modal.spec.ts` — added E2E coverage for Size modal rendering, `All` toggle semantics, persistence after apply, and chip active-state behavior
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated Founding Year modal with strict 4-digit validation, open-ended `Present` max behavior (`founding_year_max` undefined), persisted filter state, and active company-chip highlighting
 - [Created] `frontend/tests/e2e/filters/founding-year-modal.spec.ts` — added E2E coverage for Founding Year modal open/render, valid apply persistence, open-ended max handling, and invalid-range apply disabling
 - [Changed] `frontend/src/components/filters/FilterModal.tsx` — experience slider cards no longer expand on plain thumb click; expansion now triggers only after actual range change from defaults (`min > 0` or `max < 20`)

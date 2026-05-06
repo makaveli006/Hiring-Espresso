@@ -55,6 +55,7 @@ export function FilterBar() {
     Boolean(filters.salary_currency)
   const hasSelectedFoundingYear =
     filters.founding_year_min != null || filters.founding_year_max != null
+  const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
@@ -87,7 +88,8 @@ export function FilterBar() {
               label={chip.label}
               active={
                 activeModal === chip.modal ||
-                (chip.modal === 'founding' && hasSelectedFoundingYear)
+                (chip.modal === 'founding' && hasSelectedFoundingYear) ||
+                (chip.modal === 'size' && hasSelectedCompanySize)
               }
               variant="company"
               onClick={() =>

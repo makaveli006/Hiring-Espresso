@@ -143,6 +143,17 @@ const ALL_DEPARTMENT_GROUP_TITLES = DEPARTMENT_GROUPS.map((group) => group.title
 const SALARY_FREQUENCY_OPTIONS = ['Hourly', 'Daily', 'Weekly', 'Bi-Weekly', 'Monthly', 'Yearly']
 const LISTED_FREQUENCY_OPTIONS = ['Any', ...SALARY_FREQUENCY_OPTIONS]
 const LISTED_CURRENCY_OPTIONS = ['Any', 'usd', 'eur', 'cad', 'gbp', 'inr', 'aud', 'mxn']
+const COMPANY_SIZE_OPTIONS = [
+  '1 - 10 employees',
+  '11 - 50 employees',
+  '51 - 200 employees',
+  '201 - 500 employees',
+  '501 - 1000 employees',
+  '1001 - 2000 employees',
+  '2001 - 5000 employees',
+  '5001 - 10000 employees',
+  '10001+ employees',
+] as const
 
 interface CheckGroupProps {
   title: string
@@ -473,7 +484,8 @@ export function FilterModal() {
     activeModal === 'salary' ||
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
-    activeModal === 'founding'
+    activeModal === 'founding' ||
+    activeModal === 'size'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -490,6 +502,7 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>([])
   const [foundingYearMinInput, setFoundingYearMinInput] = useState('')
   const [foundingYearMaxInput, setFoundingYearMaxInput] = useState('')
   const [selectedExperienceSeniority, setSelectedExperienceSeniority] = useState<string[]>([])
@@ -550,6 +563,11 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'size') return
+    setSelectedCompanySizes(filters.company_size ?? [])
+  }, [activeModal, filters.company_size])
 
   useEffect(() => {
     if (activeModal !== 'founding') return
@@ -688,6 +706,18 @@ export function FilterModal() {
     setCommitments([])
   }
 
+  const toggleCompanySize = (sizeLabel: string) => {
+    setSelectedCompanySizes((current) =>
+      current.includes(sizeLabel)
+        ? current.filter((item) => item !== sizeLabel)
+        : [...current, sizeLabel]
+    )
+  }
+
+  const selectAllCompanySizes = () => {
+    setSelectedCompanySizes([])
+  }
+
   const clearAllExperience = () => {
     setSelectedExperienceSeniority([])
     setSelectedExperienceRoleType([])
@@ -813,6 +843,9 @@ export function FilterModal() {
       setFilter('founding_year_min', parsedFoundingYearMin)
       setFilter('founding_year_max', parsedFoundingYearMax)
     }
+    if (activeModal === 'size') {
+      setFilter('company_size', selectedCompanySizes.length ? selectedCompanySizes : undefined)
+    }
     setActiveFilterModal(null)
   }
 
@@ -823,7 +856,9 @@ export function FilterModal() {
           activeModal === 'departments' ||
           activeModal === 'salary' ||
           activeModal === 'commitment' ||
-          activeModal === 'experience'
+          activeModal === 'experience' ||
+          activeModal === 'founding' ||
+          activeModal === 'size'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -1296,6 +1331,47 @@ export function FilterModal() {
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}
                   disabled={!canApplyFoundingYear}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'size' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Size</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-8">
+                <label className="flex cursor-pointer items-center gap-3">
+                  <Checkbox
+                    checked={selectedCompanySizes.length === 0}
+                    onCheckedChange={selectAllCompanySizes}
+                    className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                  />
+                  <span className="text-sm text-gray-800">All</span>
+                </label>
+
+                {COMPANY_SIZE_OPTIONS.map((sizeOption) => (
+                  <label key={sizeOption} className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={selectedCompanySizes.includes(sizeOption)}
+                      onCheckedChange={() => toggleCompanySize(sizeOption)}
+                      className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                    />
+                    <span className="text-sm text-gray-800">{sizeOption}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
                 >
                   Apply
                 </Button>
