@@ -28,6 +28,10 @@ const COMMITMENT_OPTIONS = [
   { label: 'Seasonal', value: 'seasonal' },
   { label: 'Volunteer', value: 'volunteer' },
 ] as const
+const ENCOURAGED_TO_APPLY_OPTIONS = [
+  { label: 'Military Veterans', value: 'military_veterans' },
+  { label: 'Fair Chance', value: 'fair_chance' },
+] as const
 const EXPERIENCE_SENIORITY_OPTIONS = [
   { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
   { label: 'Entry Level', value: 'entry_level' },
@@ -485,7 +489,8 @@ export function FilterModal() {
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
     activeModal === 'founding' ||
-    activeModal === 'size'
+    activeModal === 'size' ||
+    activeModal === 'encouraged'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -502,6 +507,7 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [selectedEncouragedToApply, setSelectedEncouragedToApply] = useState<string[]>([])
   const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>([])
   const [foundingYearMinInput, setFoundingYearMinInput] = useState('')
   const [foundingYearMaxInput, setFoundingYearMaxInput] = useState('')
@@ -563,6 +569,11 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'encouraged') return
+    setSelectedEncouragedToApply(filters.encouraged_to_apply ?? [])
+  }, [activeModal, filters.encouraged_to_apply])
 
   useEffect(() => {
     if (activeModal !== 'size') return
@@ -781,6 +792,12 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'encouraged') {
+      setFilter(
+        'encouraged_to_apply',
+        selectedEncouragedToApply.length ? selectedEncouragedToApply : undefined
+      )
+    }
     if (activeModal === 'experience') {
       const { yoeMin, yoeMax } = getYoeBoundsFromSeniority(selectedExperienceSeniority)
       const normalizedRoleIndustry = normalizeExperienceRange(
@@ -858,7 +875,8 @@ export function FilterModal() {
           activeModal === 'commitment' ||
           activeModal === 'experience' ||
           activeModal === 'founding' ||
-          activeModal === 'size'
+          activeModal === 'size' ||
+          activeModal === 'encouraged'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -1010,6 +1028,46 @@ export function FilterModal() {
                 >
                   Clear all
                 </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'encouraged' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Encouraged to Apply
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <div className="space-y-5">
+                {ENCOURAGED_TO_APPLY_OPTIONS.map((option) => (
+                  <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={selectedEncouragedToApply.includes(option.value)}
+                      onCheckedChange={() =>
+                        setSelectedEncouragedToApply((current) =>
+                          current.includes(option.value)
+                            ? current.filter((item) => item !== option.value)
+                            : [...current, option.value]
+                        )
+                      }
+                      className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                    />
+                    <span className="text-sm text-gray-800">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}

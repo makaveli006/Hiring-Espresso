@@ -16,6 +16,20 @@ test.describe('Filter bar chips', () => {
     }
   })
 
+  test('company chips render inline after Encouraged to Apply', async ({ page }) => {
+    await page.goto('/')
+
+    const row = page.getByTestId('filter-chip-row')
+    const labels = await row.getByRole('button').allTextContents()
+    const normalized = labels.map((label) => label.trim())
+
+    const encouragedIndex = normalized.indexOf('Encouraged to Apply')
+    const companyIndex = normalized.indexOf('Company')
+
+    expect(encouragedIndex).toBeGreaterThanOrEqual(0)
+    expect(companyIndex).toBe(encouragedIndex + 1)
+  })
+
   test('clicking a chip marks it as active', async ({ page }) => {
     await page.goto('/')
     const chip = page.getByRole('button', { name: 'Departments', exact: true })

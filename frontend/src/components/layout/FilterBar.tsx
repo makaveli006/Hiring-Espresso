@@ -56,11 +56,12 @@ export function FilterBar() {
   const hasSelectedFoundingYear =
     filters.founding_year_min != null || filters.founding_year_max != null
   const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
+  const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
       <div className="max-w-[1456px] mx-auto w-full">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-wrap items-center gap-2" data-testid="filter-chip-row">
           {FILTER_CHIPS.map((chip) => (
             <FilterChip
               key={chip.modal}
@@ -70,16 +71,14 @@ export function FilterBar() {
                 (chip.modal === 'departments' && hasSelectedDepartments) ||
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
-                (chip.modal === 'salary' && hasSelectedSalary)
+                (chip.modal === 'salary' && hasSelectedSalary) ||
+                (chip.modal === 'encouraged' && hasSelectedEncouragedToApply)
               }
               onClick={() =>
                 setActiveFilterModal(activeModal === chip.modal ? null : chip.modal)
               }
             />
           ))}
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap mt-3">
           <span className="text-gray-300 text-base shrink-0 px-1 select-none">|</span>
 
           {COMPANY_CHIPS.map((chip) => (

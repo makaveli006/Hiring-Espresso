@@ -28,6 +28,7 @@ export const filterSchema = z.object({
   founding_year_min: z.number().optional(),
   founding_year_max: z.number().optional(),
   company_size: z.array(z.string()).optional(),
+  encouraged_to_apply: z.array(z.string()).optional(),
 })
 
 export type Filters = z.infer<typeof filterSchema>

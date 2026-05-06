@@ -6,6 +6,10 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Changed] `frontend/src/components/layout/FilterBar.tsx` — moved company chips (`Company`, `Industry`, `Stage & Funding`, `Size`, `Founding Year`) into the same inline row immediately after `Encouraged to Apply` with an inline separator, removing the separate second company row
+- [Changed] `frontend/tests/e2e/filters/filter-chips.spec.ts` — added ordering assertion to verify `Company` appears directly after `Encouraged to Apply` in the unified filter-chip row
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Encouraged to Apply` modal with multi-select options (Military Veterans, Fair Chance), persisted `encouraged_to_apply` filter state, and job-chip active highlighting when selections are applied
+- [Created] `frontend/tests/e2e/filters/encouraged-modal.spec.ts` — added E2E coverage for Encouraged to Apply modal rendering, checkbox toggling, apply persistence, and chip highlight clear behavior when all selections are removed
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Size` company modal with `All` default/exclusive behavior, full selection list, persisted `company_size` filter state, and active chip highlighting when specific size ranges are applied
 - [Created] `frontend/tests/e2e/filters/size-modal.spec.ts` — added E2E coverage for Size modal rendering, `All` toggle semantics, persistence after apply, and chip active-state behavior
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated Founding Year modal with strict 4-digit validation, open-ended `Present` max behavior (`founding_year_max` undefined), persisted filter state, and active company-chip highlighting
