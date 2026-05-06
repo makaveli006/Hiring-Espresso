@@ -32,6 +32,16 @@ const ENCOURAGED_TO_APPLY_OPTIONS = [
   { label: 'Military Veterans', value: 'military_veterans' },
   { label: 'Fair Chance', value: 'fair_chance' },
 ] as const
+const BENEFITS_PERKS_OPTIONS = [
+  { label: 'Generous Paid Time Off', value: 'generous_paid_time_off' },
+  { label: '401k Matching', value: '401k_matching' },
+  { label: 'Retirement Plan', value: 'retirement_plan' },
+  { label: 'Visa Sponsorship', value: 'visa_sponsorship' },
+  { label: 'Four Day Work Week', value: 'four_day_work_week' },
+  { label: 'Generous Parental Leave', value: 'generous_parental_leave' },
+  { label: 'Tuition Reimbursement', value: 'tuition_reimbursement' },
+  { label: 'Relocation Assistance', value: 'relocation_assistance' },
+] as const
 const EXPERIENCE_SENIORITY_OPTIONS = [
   { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
   { label: 'Entry Level', value: 'entry_level' },
@@ -490,6 +500,7 @@ export function FilterModal() {
     activeModal === 'experience' ||
     activeModal === 'founding' ||
     activeModal === 'size' ||
+    activeModal === 'benefits' ||
     activeModal === 'encouraged'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
@@ -507,6 +518,7 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [selectedBenefitsPerks, setSelectedBenefitsPerks] = useState<string[]>([])
   const [selectedEncouragedToApply, setSelectedEncouragedToApply] = useState<string[]>([])
   const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>([])
   const [foundingYearMinInput, setFoundingYearMinInput] = useState('')
@@ -569,6 +581,11 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'benefits') return
+    setSelectedBenefitsPerks(filters.benefits_perks ?? [])
+  }, [activeModal, filters.benefits_perks])
 
   useEffect(() => {
     if (activeModal !== 'encouraged') return
@@ -792,6 +809,9 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'benefits') {
+      setFilter('benefits_perks', selectedBenefitsPerks.length ? selectedBenefitsPerks : undefined)
+    }
     if (activeModal === 'encouraged') {
       setFilter(
         'encouraged_to_apply',
@@ -876,6 +896,7 @@ export function FilterModal() {
           activeModal === 'experience' ||
           activeModal === 'founding' ||
           activeModal === 'size' ||
+          activeModal === 'benefits' ||
           activeModal === 'encouraged'
             ? 'bg-white text-gray-900'
             : ''
@@ -1028,6 +1049,46 @@ export function FilterModal() {
                 >
                   Clear all
                 </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'benefits' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Benefits & Perks
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <div className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+                {BENEFITS_PERKS_OPTIONS.map((option) => (
+                  <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={selectedBenefitsPerks.includes(option.value)}
+                      onCheckedChange={() =>
+                        setSelectedBenefitsPerks((current) =>
+                          current.includes(option.value)
+                            ? current.filter((item) => item !== option.value)
+                            : [...current, option.value]
+                        )
+                      }
+                      className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                    />
+                    <span className="text-sm text-gray-800">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}

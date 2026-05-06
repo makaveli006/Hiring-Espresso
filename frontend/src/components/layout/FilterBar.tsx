@@ -56,6 +56,7 @@ export function FilterBar() {
   const hasSelectedFoundingYear =
     filters.founding_year_min != null || filters.founding_year_max != null
   const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
+  const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
 
   return (
@@ -72,6 +73,7 @@ export function FilterBar() {
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary) ||
+                (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||
                 (chip.modal === 'encouraged' && hasSelectedEncouragedToApply)
               }
               onClick={() =>
