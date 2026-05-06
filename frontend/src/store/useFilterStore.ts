@@ -5,6 +5,8 @@ interface FilterStore {
   filters: Filters
   setFilter: <K extends keyof Filters>(key: K, value: Filters[K]) => void
   toggleWorkplaceType: (type: string) => void
+  toggleCommitment: (type: string) => void
+  setCommitments: (commitments: string[]) => void
   toggleDepartment: (department: string) => void
   setDepartments: (departments: string[]) => void
   resetFilters: () => void
@@ -25,6 +27,21 @@ export const useFilterStore = create<FilterStore>((set) => ({
         ? current.filter((t) => t !== type)
         : [...current, type]
       return { filters: { ...state.filters, workplace_type: next.length ? next : undefined } }
+    }),
+
+  toggleCommitment: (type) =>
+    set((state) => {
+      const current = state.filters.commitment ?? []
+      const next = current.includes(type)
+        ? current.filter((commitment) => commitment !== type)
+        : [...current, type]
+      return { filters: { ...state.filters, commitment: next.length ? next : undefined } }
+    }),
+
+  setCommitments: (commitments) =>
+    set((state) => {
+      const next = Array.from(new Set(commitments))
+      return { filters: { ...state.filters, commitment: next.length ? next : undefined } }
     }),
 
   toggleDepartment: (department) =>

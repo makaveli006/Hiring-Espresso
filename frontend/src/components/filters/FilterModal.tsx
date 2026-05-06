@@ -18,6 +18,15 @@ import { useUIStore } from '@/store/useUIStore'
 import { useFilterStore } from '@/store/useFilterStore'
 
 const WORKPLACE_TYPES = ['Remote', 'Hybrid', 'Onsite']
+const COMMITMENT_OPTIONS = [
+  { label: 'Full Time', value: 'full_time' },
+  { label: 'Part Time', value: 'part_time' },
+  { label: 'Contract', value: 'contract' },
+  { label: 'Internship', value: 'internship' },
+  { label: 'Temporary', value: 'temporary' },
+  { label: 'Seasonal', value: 'seasonal' },
+  { label: 'Volunteer', value: 'volunteer' },
+] as const
 const PHYSICAL_POSITIONS = ['Sitting / Desk Jobs', 'Active']
 const PHYSICAL_ENVIRONMENTS = ['Office', 'Outdoor', 'Vehicle', 'Industrial', 'Customer-Facing']
 const LABOR_INTENSITY = ['Low', 'Medium', 'High']
@@ -206,13 +215,17 @@ function parseSalaryAmount(value: string): number | undefined {
 export function FilterModal() {
   const activeModal = useUIStore((s) => s.activeFilterModal)
   const open =
-    activeModal === 'locations' || activeModal === 'departments' || activeModal === 'salary'
+    activeModal === 'locations' ||
+    activeModal === 'departments' ||
+    activeModal === 'salary' ||
+    activeModal === 'commitment'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
-  const { filters, setFilter, toggleWorkplaceType, toggleDepartment, setDepartments } =
+  const { filters, setFilter, toggleWorkplaceType, toggleDepartment, setDepartments, setCommitments } =
     useFilterStore()
 
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
+  const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
 
   const [isSalaryAdvancedMode, setIsSalaryAdvancedMode] = useState(false)
   const [hideUndisclosedSalaries, setHideUndisclosedSalaries] = useState(false)
@@ -239,6 +252,11 @@ export function FilterModal() {
       setExpandedGroups(ALL_DEPARTMENT_GROUP_TITLES)
     }
   }, [activeModal])
+
+  useEffect(() => {
+    if (activeModal !== 'commitment') return
+    setSelectedCommitments(filters.commitment ?? [])
+  }, [activeModal, filters.commitment])
 
   useEffect(() => {
     if (activeModal !== 'salary') return
@@ -325,6 +343,11 @@ export function FilterModal() {
     setDepartments([])
   }
 
+  const clearAllCommitments = () => {
+    setSelectedCommitments([])
+    setCommitments([])
+  }
+
   const removeDepartment = (department: string) => {
     setDepartments(selectedDepartments.filter((item) => item !== department))
   }
@@ -357,6 +380,9 @@ export function FilterModal() {
   }
 
   const applyAndClose = () => {
+    if (activeModal === 'commitment') {
+      setCommitments(selectedCommitments)
+    }
     if (activeModal === 'salary') {
       const trimmedMinimumMin = minimumCompMin.trim()
       const trimmedMinimumMax = minimumCompMax.trim()
@@ -391,10 +417,57 @@ export function FilterModal() {
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && setActiveFilterModal(null)}>
       <DialogContent
         className={`flex max-h-[88vh] w-[95vw] max-w-[680px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[680px] ${
-          activeModal === 'departments' || activeModal === 'salary' ? 'bg-white text-gray-900' : ''
+          activeModal === 'departments' || activeModal === 'salary' || activeModal === 'commitment'
+            ? 'bg-white text-gray-900'
+            : ''
         }`}
       >
-        {activeModal === 'salary' ? (
+        {activeModal === 'commitment' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Commitment</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-4">
+                {COMMITMENT_OPTIONS.map((option) => (
+                  <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={selectedCommitments.includes(option.value)}
+                      onCheckedChange={() =>
+                        setSelectedCommitments((current) =>
+                          current.includes(option.value)
+                            ? current.filter((item) => item !== option.value)
+                            : [...current, option.value]
+                        )
+                      }
+                      className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                    />
+                    <span className="text-base text-gray-800">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={clearAllCommitments}
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                >
+                  Clear all
+                </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-lg font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'salary' ? (
           <>
             <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
               <DialogTitle className="text-lg font-semibold text-gray-900">Salary</DialogTitle>

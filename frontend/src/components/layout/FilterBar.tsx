@@ -31,6 +31,7 @@ export function FilterBar() {
   const activeModal = useUIStore((s) => s.activeFilterModal)
   const filters = useFilterStore((s) => s.filters)
   const hasSelectedDepartments = (filters.department?.length ?? 0) > 0
+  const hasSelectedCommitment = (filters.commitment?.length ?? 0) > 0
   const hasSelectedSalary =
     filters.salary_min != null ||
     Boolean(filters.salary_minimum_min) ||
@@ -53,6 +54,7 @@ export function FilterBar() {
               active={
                 activeModal === chip.modal ||
                 (chip.modal === 'departments' && hasSelectedDepartments) ||
+                (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'salary' && hasSelectedSalary)
               }
               onClick={() =>

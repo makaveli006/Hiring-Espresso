@@ -35,3 +35,13 @@ export const COMPANY_FILTER_CHIPS = [
 ] as const
 
 export const WORKPLACE_TYPES = ['Remote', 'Hybrid', 'Onsite'] as const
+
+export const COMMITMENT_TYPES = [
+  'Full Time',
+  'Part Time',
+  'Contract',
+  'Internship',
+  'Temporary',
+  'Seasonal',
+  'Volunteer',
+] as const
