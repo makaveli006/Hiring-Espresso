@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Travel Requirement` modal with independent air/land travel multi-select options, fixed footer + scrollable body layout to keep last `Extensive` option visible, persisted `travel_air`/`travel_land` state, and chip active highlighting
+- [Created] `frontend/tests/e2e/filters/travel-modal.spec.ts` — added E2E coverage for Travel modal section rendering, last `Extensive` visibility/interactivity near footer, apply persistence, and chip highlight behavior
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Benefits & Perks` modal with independent multi-select options, two-column desktop layout, persisted `benefits_perks` filter state, and chip active highlighting when selections are applied
 - [Created] `frontend/tests/e2e/filters/benefits-modal.spec.ts` — added E2E coverage for Benefits & Perks modal rendering, independent checkbox toggling, and apply persistence behavior
 - [Changed] `frontend/src/components/layout/FilterBar.tsx` — moved company chips (`Company`, `Industry`, `Stage & Funding`, `Size`, `Founding Year`) into the same inline row immediately after `Encouraged to Apply` with an inline separator, removing the separate second company row

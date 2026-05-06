@@ -25,6 +25,8 @@ export const filterSchema = z.object({
   salary_maximum_frequency: z.string().optional(),
   salary_listed_frequency: z.string().optional(),
   salary_currency: z.string().optional(),
+  travel_air: z.array(z.string()).optional(),
+  travel_land: z.array(z.string()).optional(),
   founding_year_min: z.number().optional(),
   founding_year_max: z.number().optional(),
   company_size: z.array(z.string()).optional(),

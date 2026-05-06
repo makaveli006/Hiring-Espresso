@@ -42,6 +42,12 @@ const BENEFITS_PERKS_OPTIONS = [
   { label: 'Tuition Reimbursement', value: 'tuition_reimbursement' },
   { label: 'Relocation Assistance', value: 'relocation_assistance' },
 ] as const
+const TRAVEL_REQUIREMENT_OPTIONS = [
+  { label: 'None', value: 'none' },
+  { label: 'Minimal', value: 'minimal' },
+  { label: 'Moderate', value: 'moderate' },
+  { label: 'Extensive', value: 'extensive' },
+] as const
 const EXPERIENCE_SENIORITY_OPTIONS = [
   { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
   { label: 'Entry Level', value: 'entry_level' },
@@ -498,6 +504,7 @@ export function FilterModal() {
     activeModal === 'salary' ||
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
+    activeModal === 'travel' ||
     activeModal === 'founding' ||
     activeModal === 'size' ||
     activeModal === 'benefits' ||
@@ -518,6 +525,8 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [selectedTravelAir, setSelectedTravelAir] = useState<string[]>([])
+  const [selectedTravelLand, setSelectedTravelLand] = useState<string[]>([])
   const [selectedBenefitsPerks, setSelectedBenefitsPerks] = useState<string[]>([])
   const [selectedEncouragedToApply, setSelectedEncouragedToApply] = useState<string[]>([])
   const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>([])
@@ -581,6 +590,12 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'travel') return
+    setSelectedTravelAir(filters.travel_air ?? [])
+    setSelectedTravelLand(filters.travel_land ?? [])
+  }, [activeModal, filters.travel_air, filters.travel_land])
 
   useEffect(() => {
     if (activeModal !== 'benefits') return
@@ -809,6 +824,10 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'travel') {
+      setFilter('travel_air', selectedTravelAir.length ? selectedTravelAir : undefined)
+      setFilter('travel_land', selectedTravelLand.length ? selectedTravelLand : undefined)
+    }
     if (activeModal === 'benefits') {
       setFilter('benefits_perks', selectedBenefitsPerks.length ? selectedBenefitsPerks : undefined)
     }
@@ -894,6 +913,7 @@ export function FilterModal() {
           activeModal === 'salary' ||
           activeModal === 'commitment' ||
           activeModal === 'experience' ||
+          activeModal === 'travel' ||
           activeModal === 'founding' ||
           activeModal === 'size' ||
           activeModal === 'benefits' ||
@@ -1049,6 +1069,71 @@ export function FilterModal() {
                 >
                   Clear all
                 </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'travel' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Travel Requirement
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8 pb-8">
+              <section>
+                <h3 className="mb-4 text-sm font-semibold text-gray-900">Air Travel Requirement</h3>
+                <div className="space-y-5">
+                  {TRAVEL_REQUIREMENT_OPTIONS.map((option) => (
+                    <label key={`air-${option.value}`} className="flex cursor-pointer items-center gap-3">
+                      <Checkbox
+                        checked={selectedTravelAir.includes(option.value)}
+                        onCheckedChange={() =>
+                          setSelectedTravelAir((current) =>
+                            current.includes(option.value)
+                              ? current.filter((item) => item !== option.value)
+                              : [...current, option.value]
+                          )
+                        }
+                        className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                      />
+                      <span className="text-sm text-gray-800">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <section className="mt-8">
+                <h3 className="mb-4 text-sm font-semibold text-gray-900">Land Travel Requirement</h3>
+                <div className="space-y-5">
+                  {TRAVEL_REQUIREMENT_OPTIONS.map((option) => (
+                    <label key={`land-${option.value}`} className="flex cursor-pointer items-center gap-3">
+                      <Checkbox
+                        checked={selectedTravelLand.includes(option.value)}
+                        onCheckedChange={() =>
+                          setSelectedTravelLand((current) =>
+                            current.includes(option.value)
+                              ? current.filter((item) => item !== option.value)
+                              : [...current, option.value]
+                          )
+                        }
+                        className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                      />
+                      <span className="text-sm text-gray-800">{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}

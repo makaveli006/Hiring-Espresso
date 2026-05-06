@@ -58,6 +58,8 @@ export function FilterBar() {
   const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
+  const hasSelectedTravelRequirement =
+    (filters.travel_air?.length ?? 0) > 0 || (filters.travel_land?.length ?? 0) > 0
 
   return (
     <div className="border-b border-border bg-background px-4 py-3">
@@ -73,6 +75,7 @@ export function FilterBar() {
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary) ||
+                (chip.modal === 'travel' && hasSelectedTravelRequirement) ||
                 (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||
                 (chip.modal === 'encouraged' && hasSelectedEncouragedToApply)
               }
