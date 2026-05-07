@@ -1,4 +1,4 @@
-import { Menu, Sun, Moon, Building2 } from 'lucide-react'
+import { Menu, Sun, Moon } from 'lucide-react'
 import { useAuth, UserButton } from '@clerk/clerk-react'
 import {
   DropdownMenu,
@@ -85,7 +85,7 @@ export function HeaderMenu() {
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => { window.location.href = '/employers' }}>
-          <Building2 className="w-4 h-4" />
+          <span aria-hidden="true" className="text-base leading-none">🏢</span>
           Employers
         </DropdownMenuItem>
 
@@ -100,11 +100,19 @@ export function HeaderMenu() {
               {theme === 'dark' ? 'Dark' : 'Light'}
             </span>
             <div className="flex items-center space-x-2 p-0.5 rounded-full bg-gray-200 shadow-inner border border-gray-300 dark:bg-gray-700 dark:border-gray-600">
-              <div className={`rounded-full p-1 ${theme === 'light' ? 'bg-gray-400' : ''}`}>
-                <Sun className="w-3 h-3" />
+              <div
+                className={`rounded-full p-1 ${
+                  theme === 'light' ? 'bg-yellow-300 ring-1 ring-yellow-400/80' : ''
+                }`}
+              >
+                <Sun
+                  className={`w-3 h-3 ${
+                    theme === 'light' ? 'text-yellow-700' : 'text-gray-600 dark:text-gray-300'
+                  }`}
+                />
               </div>
               <div className={`rounded-full p-1 ${theme === 'dark' ? 'bg-gray-400' : ''}`}>
-                <Moon className="w-3 h-3" />
+                <Moon className="w-3 h-3 text-gray-700 dark:text-gray-100" />
               </div>
             </div>
           </button>

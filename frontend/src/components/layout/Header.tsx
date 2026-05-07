@@ -13,7 +13,7 @@ interface HeaderProps {
 
 export function Header({ simple = false }: HeaderProps) {
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
-  const { isLoaded, isSignedIn } = useAuth()
+  const { isSignedIn } = useAuth()
 
   return (
     <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-2">
