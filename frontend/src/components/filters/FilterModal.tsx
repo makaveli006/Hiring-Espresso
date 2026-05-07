@@ -563,6 +563,7 @@ export function FilterModal() {
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
     activeModal === 'travel' ||
+    activeModal === 'company' ||
     activeModal === 'stage' ||
     activeModal === 'founding' ||
     activeModal === 'size' ||
@@ -584,6 +585,11 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [activeCompanyDropdownField, setActiveCompanyDropdownField] = useState<string | null>(null)
+  const [companyNamesInput, setCompanyNamesInput] = useState('')
+  const [companyExcludeNamesInput, setCompanyExcludeNamesInput] = useState('')
+  const [companyHqCountriesInput, setCompanyHqCountriesInput] = useState('')
+  const [companyExcludeHqCountriesInput, setCompanyExcludeHqCountriesInput] = useState('')
   const [activeStageDropdownField, setActiveStageDropdownField] = useState<string | null>(null)
   const [stageInvestorsInput, setStageInvestorsInput] = useState('')
   const [stageExcludeInvestorsInput, setStageExcludeInvestorsInput] = useState('')
@@ -656,6 +662,21 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'company') return
+    setActiveCompanyDropdownField(null)
+    setCompanyNamesInput(filters.company_names ?? '')
+    setCompanyExcludeNamesInput(filters.company_exclude_names ?? '')
+    setCompanyHqCountriesInput(filters.company_hq_countries ?? '')
+    setCompanyExcludeHqCountriesInput(filters.company_exclude_hq_countries ?? '')
+  }, [
+    activeModal,
+    filters.company_exclude_hq_countries,
+    filters.company_exclude_names,
+    filters.company_hq_countries,
+    filters.company_names,
+  ])
 
   useEffect(() => {
     if (activeModal !== 'stage') return
@@ -915,6 +936,17 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'company') {
+      const normalizedCompanyNames = companyNamesInput.trim()
+      const normalizedExcludeCompanyNames = companyExcludeNamesInput.trim()
+      const normalizedHqCountries = companyHqCountriesInput.trim()
+      const normalizedExcludeHqCountries = companyExcludeHqCountriesInput.trim()
+
+      setFilter('company_names', normalizedCompanyNames || undefined)
+      setFilter('company_exclude_names', normalizedExcludeCompanyNames || undefined)
+      setFilter('company_hq_countries', normalizedHqCountries || undefined)
+      setFilter('company_exclude_hq_countries', normalizedExcludeHqCountries || undefined)
+    }
     if (activeModal === 'stage') {
       const normalizedInvestors = stageInvestorsInput.trim()
       const normalizedExcludeInvestors = stageExcludeInvestorsInput.trim()
@@ -1023,6 +1055,7 @@ export function FilterModal() {
           activeModal === 'commitment' ||
           activeModal === 'experience' ||
           activeModal === 'travel' ||
+          activeModal === 'company' ||
           activeModal === 'stage' ||
           activeModal === 'founding' ||
           activeModal === 'size' ||
@@ -1240,6 +1273,73 @@ export function FilterModal() {
                   ))}
                 </div>
               </section>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'company' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Company</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-8">
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="company-names"
+                      activeFieldId={activeCompanyDropdownField}
+                      onActiveFieldChange={setActiveCompanyDropdownField}
+                      label="Company Name"
+                      value={companyNamesInput}
+                      onChange={setCompanyNamesInput}
+                      ariaLabel="Company names"
+                    />
+                    <StageSearchField
+                      fieldId="company-exclude-names"
+                      activeFieldId={activeCompanyDropdownField}
+                      onActiveFieldChange={setActiveCompanyDropdownField}
+                      label="Exclude Company Names"
+                      value={companyExcludeNamesInput}
+                      onChange={setCompanyExcludeNamesInput}
+                      ariaLabel="Exclude company names"
+                    />
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="company-hq-countries"
+                      activeFieldId={activeCompanyDropdownField}
+                      onActiveFieldChange={setActiveCompanyDropdownField}
+                      label="Company HQ Country"
+                      value={companyHqCountriesInput}
+                      onChange={setCompanyHqCountriesInput}
+                      ariaLabel="Company HQ countries"
+                    />
+                    <StageSearchField
+                      fieldId="company-exclude-hq-countries"
+                      activeFieldId={activeCompanyDropdownField}
+                      onActiveFieldChange={setActiveCompanyDropdownField}
+                      label="Exclude HQ Countries"
+                      value={companyExcludeHqCountriesInput}
+                      onChange={setCompanyExcludeHqCountriesInput}
+                      ariaLabel="Exclude HQ countries"
+                    />
+                  </div>
+                </section>
+              </div>
             </div>
 
             <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">

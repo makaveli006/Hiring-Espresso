@@ -56,6 +56,11 @@ export function FilterBar() {
   const hasSelectedFoundingYear =
     filters.founding_year_min != null || filters.founding_year_max != null
   const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
+  const hasSelectedCompany =
+    Boolean(filters.company_names) ||
+    Boolean(filters.company_exclude_names) ||
+    Boolean(filters.company_hq_countries) ||
+    Boolean(filters.company_exclude_hq_countries)
   const hasSelectedStageFunding =
     Boolean(filters.stage_investors) ||
     Boolean(filters.stage_exclude_investors) ||
@@ -99,6 +104,7 @@ export function FilterBar() {
               label={chip.label}
               active={
                 activeModal === chip.modal ||
+                (chip.modal === 'company' && hasSelectedCompany) ||
                 (chip.modal === 'founding' && hasSelectedFoundingYear) ||
                 (chip.modal === 'size' && hasSelectedCompanySize) ||
                 (chip.modal === 'stage' && hasSelectedStageFunding)

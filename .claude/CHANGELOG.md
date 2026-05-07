@@ -6,6 +6,9 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Company` modal with include/exclude company names and include/exclude HQ countries fields, persisted company filter state, and company-chip active highlighting
+- [Created] `frontend/tests/e2e/filters/company-modal.spec.ts` — added E2E coverage for Company modal render, mutually exclusive dropdown panel behavior, and apply persistence/chip highlight
+- [Fixed] `frontend/tests/e2e/filters/company-modal.spec.ts` — stabilized dropdown overlay assertion by handling toggle behavior deterministically so only one `No options` panel is asserted visible after each targeted dropdown interaction
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Stage & Funding` modal with Investors / Exclude Investors, Latest Round / Exclude Latest Round, Raised In Or After year, and Latest Round Amount Raised currency fields; added persisted stage filter state and company-chip active highlighting
 - [Created] `frontend/tests/e2e/filters/stage-funding-modal.spec.ts` — added E2E coverage for Stage & Funding modal field rendering and apply persistence behavior
 - [Fixed] `strict mode violation` in `frontend/tests/e2e/filters/stage-funding-modal.spec.ts` — disambiguated overlapping textbox accessible names by using `exact: true` in role selectors
