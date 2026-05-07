@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Industry` modal with three cards (`Organization Type`, `Company Industry`, `Company Activities & Keywords`), include/exclude dropdown-search fields, persisted industry filter state, and company-chip active highlighting
+- [Created] `frontend/tests/e2e/filters/industry-modal.spec.ts` — added E2E coverage for Industry modal rendering, mutually exclusive `No options` dropdown panel behavior, and apply persistence/chip highlight
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Company` modal with include/exclude company names and include/exclude HQ countries fields, persisted company filter state, and company-chip active highlighting
 - [Created] `frontend/tests/e2e/filters/company-modal.spec.ts` — added E2E coverage for Company modal render, mutually exclusive dropdown panel behavior, and apply persistence/chip highlight
 - [Fixed] `frontend/tests/e2e/filters/company-modal.spec.ts` — stabilized dropdown overlay assertion by handling toggle behavior deterministically so only one `No options` panel is asserted visible after each targeted dropdown interaction
@@ -345,3 +347,4 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] `frontend/src/components/jobs/JobCarousel.tsx` — `CardSkeleton` width `w-72` → `w-[340px]`; scroll amount 300 → 340 to match new card width
 - [Changed] rontend/src/components/filters/FilterModal.tsx — merged Stage & Funding Latest Round and Exclude Latest Round back into a single shared card while keeping Raised In Or After and Latest Round Amount Raised as plain sections
 - [Changed] rontend/src/components/filters/FilterModal.tsx — Stage & Funding dropdown-style fields now open a menu panel with No options when the chevron or input is focused, matching expected dropdown behavior
+- [Added] rontend/src/components/filters/FilterModal.tsx + rontend/src/schemas/filter.schema.ts + rontend/src/components/layout/FilterBar.tsx — added USA Federal Jobs policy card under Industry modal with 3 radio-style options (include/only/exclude), persisted industry_usajobs_policy state, and Industry chip activation when non-default policy is selected

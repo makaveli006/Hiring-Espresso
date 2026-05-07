@@ -61,6 +61,14 @@ export function FilterBar() {
     Boolean(filters.company_exclude_names) ||
     Boolean(filters.company_hq_countries) ||
     Boolean(filters.company_exclude_hq_countries)
+  const hasSelectedIndustry =
+    Boolean(filters.industry_organization_type) ||
+    Boolean(filters.industry_exclude_organization_types) ||
+    Boolean(filters.industry_company_industry) ||
+    Boolean(filters.industry_exclude_industries) ||
+    Boolean(filters.industry_company_activities_keywords) ||
+    Boolean(filters.industry_exclude_company_industries_keywords) ||
+    Boolean(filters.industry_usajobs_policy)
   const hasSelectedStageFunding =
     Boolean(filters.stage_investors) ||
     Boolean(filters.stage_exclude_investors) ||
@@ -105,6 +113,7 @@ export function FilterBar() {
               active={
                 activeModal === chip.modal ||
                 (chip.modal === 'company' && hasSelectedCompany) ||
+                (chip.modal === 'industry' && hasSelectedIndustry) ||
                 (chip.modal === 'founding' && hasSelectedFoundingYear) ||
                 (chip.modal === 'size' && hasSelectedCompanySize) ||
                 (chip.modal === 'stage' && hasSelectedStageFunding)

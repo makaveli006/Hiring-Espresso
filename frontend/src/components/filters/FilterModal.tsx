@@ -174,6 +174,11 @@ const COMPANY_SIZE_OPTIONS = [
   '5001 - 10000 employees',
   '10001+ employees',
 ] as const
+const USAJOBS_POLICY_OPTIONS = [
+  { label: 'Ok to include jobs from USAJobs.gov', value: 'include' },
+  { label: 'Only show jobs from USAJobs.gov', value: 'only' },
+  { label: 'Do not show any jobs from USAJobs.gov', value: 'exclude' },
+] as const
 
 interface CheckGroupProps {
   title: string
@@ -564,6 +569,7 @@ export function FilterModal() {
     activeModal === 'experience' ||
     activeModal === 'travel' ||
     activeModal === 'company' ||
+    activeModal === 'industry' ||
     activeModal === 'stage' ||
     activeModal === 'founding' ||
     activeModal === 'size' ||
@@ -590,6 +596,23 @@ export function FilterModal() {
   const [companyExcludeNamesInput, setCompanyExcludeNamesInput] = useState('')
   const [companyHqCountriesInput, setCompanyHqCountriesInput] = useState('')
   const [companyExcludeHqCountriesInput, setCompanyExcludeHqCountriesInput] = useState('')
+  const [activeIndustryDropdownField, setActiveIndustryDropdownField] = useState<string | null>(
+    null
+  )
+  const [industryOrganizationTypeInput, setIndustryOrganizationTypeInput] = useState('')
+  const [industryExcludeOrganizationTypesInput, setIndustryExcludeOrganizationTypesInput] =
+    useState('')
+  const [industryCompanyIndustryInput, setIndustryCompanyIndustryInput] = useState('')
+  const [industryExcludeIndustriesInput, setIndustryExcludeIndustriesInput] = useState('')
+  const [industryCompanyActivitiesKeywordsInput, setIndustryCompanyActivitiesKeywordsInput] =
+    useState('')
+  const [
+    industryExcludeCompanyIndustriesKeywordsInput,
+    setIndustryExcludeCompanyIndustriesKeywordsInput,
+  ] = useState('')
+  const [industryUsaJobsPolicy, setIndustryUsaJobsPolicy] = useState<'include' | 'only' | 'exclude'>(
+    'include'
+  )
   const [activeStageDropdownField, setActiveStageDropdownField] = useState<string | null>(null)
   const [stageInvestorsInput, setStageInvestorsInput] = useState('')
   const [stageExcludeInvestorsInput, setStageExcludeInvestorsInput] = useState('')
@@ -676,6 +699,30 @@ export function FilterModal() {
     filters.company_exclude_names,
     filters.company_hq_countries,
     filters.company_names,
+  ])
+
+  useEffect(() => {
+    if (activeModal !== 'industry') return
+    setActiveIndustryDropdownField(null)
+    setIndustryOrganizationTypeInput(filters.industry_organization_type ?? '')
+    setIndustryExcludeOrganizationTypesInput(filters.industry_exclude_organization_types ?? '')
+    setIndustryCompanyIndustryInput(filters.industry_company_industry ?? '')
+    setIndustryExcludeIndustriesInput(filters.industry_exclude_industries ?? '')
+    setIndustryCompanyActivitiesKeywordsInput(filters.industry_company_activities_keywords ?? '')
+    setIndustryExcludeCompanyIndustriesKeywordsInput(
+      filters.industry_exclude_company_industries_keywords ?? ''
+    )
+    const policy = filters.industry_usajobs_policy
+    setIndustryUsaJobsPolicy(policy === 'only' || policy === 'exclude' ? policy : 'include')
+  }, [
+    activeModal,
+    filters.industry_company_activities_keywords,
+    filters.industry_company_industry,
+    filters.industry_exclude_company_industries_keywords,
+    filters.industry_exclude_industries,
+    filters.industry_exclude_organization_types,
+    filters.industry_organization_type,
+    filters.industry_usajobs_policy,
   ])
 
   useEffect(() => {
@@ -947,6 +994,35 @@ export function FilterModal() {
       setFilter('company_hq_countries', normalizedHqCountries || undefined)
       setFilter('company_exclude_hq_countries', normalizedExcludeHqCountries || undefined)
     }
+    if (activeModal === 'industry') {
+      const normalizedOrganizationType = industryOrganizationTypeInput.trim()
+      const normalizedExcludeOrganizationTypes = industryExcludeOrganizationTypesInput.trim()
+      const normalizedCompanyIndustry = industryCompanyIndustryInput.trim()
+      const normalizedExcludeIndustries = industryExcludeIndustriesInput.trim()
+      const normalizedCompanyActivitiesKeywords = industryCompanyActivitiesKeywordsInput.trim()
+      const normalizedExcludeCompanyIndustriesKeywords =
+        industryExcludeCompanyIndustriesKeywordsInput.trim()
+
+      setFilter('industry_organization_type', normalizedOrganizationType || undefined)
+      setFilter(
+        'industry_exclude_organization_types',
+        normalizedExcludeOrganizationTypes || undefined
+      )
+      setFilter('industry_company_industry', normalizedCompanyIndustry || undefined)
+      setFilter('industry_exclude_industries', normalizedExcludeIndustries || undefined)
+      setFilter(
+        'industry_company_activities_keywords',
+        normalizedCompanyActivitiesKeywords || undefined
+      )
+      setFilter(
+        'industry_exclude_company_industries_keywords',
+        normalizedExcludeCompanyIndustriesKeywords || undefined
+      )
+      setFilter(
+        'industry_usajobs_policy',
+        industryUsaJobsPolicy === 'include' ? undefined : industryUsaJobsPolicy
+      )
+    }
     if (activeModal === 'stage') {
       const normalizedInvestors = stageInvestorsInput.trim()
       const normalizedExcludeInvestors = stageExcludeInvestorsInput.trim()
@@ -1056,6 +1132,7 @@ export function FilterModal() {
           activeModal === 'experience' ||
           activeModal === 'travel' ||
           activeModal === 'company' ||
+          activeModal === 'industry' ||
           activeModal === 'stage' ||
           activeModal === 'founding' ||
           activeModal === 'size' ||
@@ -1337,6 +1414,121 @@ export function FilterModal() {
                       onChange={setCompanyExcludeHqCountriesInput}
                       ariaLabel="Exclude HQ countries"
                     />
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'industry' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Industry</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-8">
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="industry-organization-type"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Organization Type"
+                      value={industryOrganizationTypeInput}
+                      onChange={setIndustryOrganizationTypeInput}
+                      ariaLabel="Industry organization type"
+                    />
+                    <StageSearchField
+                      fieldId="industry-exclude-organization-types"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Exclude Organization Types"
+                      value={industryExcludeOrganizationTypesInput}
+                      onChange={setIndustryExcludeOrganizationTypesInput}
+                      ariaLabel="Industry exclude organization types"
+                    />
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="industry-company-industry"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Company Industry"
+                      value={industryCompanyIndustryInput}
+                      onChange={setIndustryCompanyIndustryInput}
+                      ariaLabel="Industry company industry"
+                    />
+                    <StageSearchField
+                      fieldId="industry-exclude-industries"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Exclude Industries"
+                      value={industryExcludeIndustriesInput}
+                      onChange={setIndustryExcludeIndustriesInput}
+                      ariaLabel="Industry exclude industries"
+                    />
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="industry-company-activities-keywords"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Company Activities & Keywords"
+                      value={industryCompanyActivitiesKeywordsInput}
+                      onChange={setIndustryCompanyActivitiesKeywordsInput}
+                      ariaLabel="Industry company activities keywords"
+                    />
+                    <StageSearchField
+                      fieldId="industry-exclude-company-industries-keywords"
+                      activeFieldId={activeIndustryDropdownField}
+                      onActiveFieldChange={setActiveIndustryDropdownField}
+                      label="Exclude Company Industries & Keywords"
+                      value={industryExcludeCompanyIndustriesKeywordsInput}
+                      onChange={setIndustryExcludeCompanyIndustriesKeywordsInput}
+                      ariaLabel="Industry exclude company industries keywords"
+                    />
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-gray-900">USA Federal Jobs</h3>
+                    {USAJOBS_POLICY_OPTIONS.map((option) => (
+                      <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setIndustryUsaJobsPolicy(option.value)}
+                          aria-label={option.label}
+                          className={`flex h-7 w-7 items-center justify-center rounded-full border ${
+                            industryUsaJobsPolicy === option.value
+                              ? 'border-pink-500'
+                              : 'border-gray-300'
+                          }`}
+                        >
+                          {industryUsaJobsPolicy === option.value ? (
+                            <span className="h-3 w-3 rounded-full bg-pink-500" />
+                          ) : null}
+                        </button>
+                        <span className="text-sm text-gray-800">{option.label}</span>
+                      </label>
+                    ))}
                   </div>
                 </section>
               </div>
