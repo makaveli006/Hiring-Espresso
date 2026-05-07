@@ -608,7 +608,8 @@ export function FilterModal() {
     activeModal === 'benefits' ||
     activeModal === 'encouraged' ||
     activeModal === 'languages' ||
-    activeModal === 'security'
+    activeModal === 'security' ||
+    activeModal === 'licenses'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -633,6 +634,12 @@ export function FilterModal() {
   const [activeIndustryDropdownField, setActiveIndustryDropdownField] = useState<string | null>(
     null
   )
+  const [activeLicensesDropdownField, setActiveLicensesDropdownField] = useState<string | null>(
+    null
+  )
+  const [licensesHideRequired, setLicensesHideRequired] = useState<'yes' | 'no'>('no')
+  const [licensesKeywordsInput, setLicensesKeywordsInput] = useState('')
+  const [licensesExcludeKeywordsInput, setLicensesExcludeKeywordsInput] = useState('')
   const [industryOrganizationTypeInput, setIndustryOrganizationTypeInput] = useState('')
   const [industryExcludeOrganizationTypesInput, setIndustryExcludeOrganizationTypesInput] =
     useState('')
@@ -762,6 +769,19 @@ export function FilterModal() {
     filters.company_exclude_names,
     filters.company_hq_countries,
     filters.company_names,
+  ])
+
+  useEffect(() => {
+    if (activeModal !== 'licenses') return
+    setActiveLicensesDropdownField(null)
+    setLicensesHideRequired(filters.licenses_hide_required ? 'yes' : 'no')
+    setLicensesKeywordsInput(filters.licenses_keywords ?? '')
+    setLicensesExcludeKeywordsInput(filters.licenses_exclude_keywords ?? '')
+  }, [
+    activeModal,
+    filters.licenses_exclude_keywords,
+    filters.licenses_hide_required,
+    filters.licenses_keywords,
   ])
 
   useEffect(() => {
@@ -1126,6 +1146,13 @@ export function FilterModal() {
         industryUsaJobsPolicy === 'include' ? undefined : industryUsaJobsPolicy
       )
     }
+    if (activeModal === 'licenses') {
+      const normalizedLicensesKeywords = licensesKeywordsInput.trim()
+      const normalizedLicensesExcludeKeywords = licensesExcludeKeywordsInput.trim()
+      setFilter('licenses_hide_required', licensesHideRequired === 'yes' ? true : undefined)
+      setFilter('licenses_keywords', normalizedLicensesKeywords || undefined)
+      setFilter('licenses_exclude_keywords', normalizedLicensesExcludeKeywords || undefined)
+    }
     if (activeModal === 'stage') {
       const normalizedInvestors = stageInvestorsInput.trim()
       const normalizedExcludeInvestors = stageExcludeInvestorsInput.trim()
@@ -1289,7 +1316,8 @@ export function FilterModal() {
           activeModal === 'benefits' ||
           activeModal === 'encouraged' ||
           activeModal === 'languages' ||
-          activeModal === 'security'
+          activeModal === 'security' ||
+          activeModal === 'licenses'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -1800,6 +1828,80 @@ export function FilterModal() {
                   </div>
                 </section>
               </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'licenses' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Licenses &amp; Certifications
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                      Hide jobs that require licenses or certifications?
+                    </h3>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setLicensesHideRequired('yes')}
+                        className={`h-9 rounded-md border px-4 text-sm transition-colors ${
+                          licensesHideRequired === 'yes'
+                            ? 'border-pink-500 bg-pink-500 text-white'
+                            : 'border-gray-500 bg-white text-gray-800'
+                        }`}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLicensesHideRequired('no')}
+                        className={`h-9 rounded-md border px-4 text-sm transition-colors ${
+                          licensesHideRequired === 'no'
+                            ? 'border-pink-500 bg-pink-500 text-white'
+                            : 'border-gray-500 bg-white text-gray-800'
+                        }`}
+                      >
+                        No
+                      </button>
+                    </div>
+                  </div>
+
+                  <StageSearchField
+                    fieldId="licenses-keywords"
+                    activeFieldId={activeLicensesDropdownField}
+                    onActiveFieldChange={setActiveLicensesDropdownField}
+                    label="Licenses & Certifications Keywords"
+                    value={licensesKeywordsInput}
+                    onChange={setLicensesKeywordsInput}
+                    ariaLabel="Licenses and certifications keywords"
+                  />
+                  <StageSearchField
+                    fieldId="licenses-exclude-keywords"
+                    activeFieldId={activeLicensesDropdownField}
+                    onActiveFieldChange={setActiveLicensesDropdownField}
+                    label="Exclude Licenses & Certifications Keywords"
+                    value={licensesExcludeKeywordsInput}
+                    onChange={setLicensesExcludeKeywordsInput}
+                    ariaLabel="Exclude licenses and certifications keywords"
+                  />
+                </div>
+              </section>
             </div>
 
             <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">

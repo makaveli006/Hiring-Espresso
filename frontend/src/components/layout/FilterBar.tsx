@@ -78,6 +78,10 @@ export function FilterBar() {
     filters.stage_latest_round_amount_raised != null
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
+  const hasSelectedLicenses =
+    Boolean(filters.licenses_hide_required) ||
+    Boolean(filters.licenses_keywords) ||
+    Boolean(filters.licenses_exclude_keywords)
   const hasSelectedSecurityClearance = (filters.security_clearance?.length ?? 0) > 0
   const hasSelectedLanguages =
     Boolean(filters.language_requirements) || Boolean(filters.language_exclude_requirements)
@@ -111,6 +115,7 @@ export function FilterBar() {
                 (chip.modal === 'travel' && hasSelectedTravelRequirement) ||
                 (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||
                 (chip.modal === 'encouraged' && hasSelectedEncouragedToApply) ||
+                (chip.modal === 'licenses' && hasSelectedLicenses) ||
                 (chip.modal === 'security' && hasSelectedSecurityClearance)
               }
               onClick={() =>

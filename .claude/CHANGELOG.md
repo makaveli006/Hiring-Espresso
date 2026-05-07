@@ -375,3 +375,8 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] rontend/src/schemas/filter.schema.ts — added security_clearance array field
 - [Changed] rontend/src/components/layout/FilterBar.tsx — Security Clearance chip now highlights when a subset clearance filter is active
 - [Added] rontend/tests/e2e/filters/security-modal.spec.ts — added coverage for rendering, default all-selected state, subset persistence, and neutral reselect-all behavior
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — implemented Licenses & Certifications modal with Yes/No hide toggle, include/exclude keyword dropdown-style fields, and Apply persistence
+- [Changed] rontend/src/schemas/filter.schema.ts — added licenses_hide_required, licenses_keywords, and licenses_exclude_keywords fields
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Licenses & Certifications chip now highlights when hide toggle is active or include/exclude keywords are set
+- [Added] rontend/tests/e2e/filters/licenses-modal.spec.ts — added e2e coverage for default state, single-open dropdown behavior, persistence, and chip highlight clearing
