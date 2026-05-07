@@ -370,3 +370,8 @@ All notable changes to Hiring Espresso are documented here.
 - [Added] rontend/tests/e2e/filters/languages-modal.spec.ts — added e2e coverage for modal rendering, single-open No options dropdown behavior, persistence, and chip highlight clearing
 
 - [Changed] rontend/src/components/filters/FilterModal.tsx — updated shared StageSearchField behavior so dropdown panels do not auto-expand on input focus; all dropdown-style modal fields now stay collapsed until explicit dropdown interaction
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — implemented Security Clearance modal with 8 options, all-selected neutral default, subset persistence, and green text styling for No explicit reference to clearance
+- [Changed] rontend/src/schemas/filter.schema.ts — added security_clearance array field
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Security Clearance chip now highlights when a subset clearance filter is active
+- [Added] rontend/tests/e2e/filters/security-modal.spec.ts — added coverage for rendering, default all-selected state, subset persistence, and neutral reselect-all behavior

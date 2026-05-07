@@ -64,6 +64,17 @@ const SHIFT_ONCALL_OPTIONS = [
   { label: 'Regular (once a week or more)', value: 'regular_once_a_week_or_more' },
 ] as const
 type ShiftOncallValue = (typeof SHIFT_ONCALL_OPTIONS)[number]['value']
+const SECURITY_CLEARANCE_OPTIONS = [
+  { label: 'No explicit reference to clearance', value: 'no_explicit_reference_to_clearance' },
+  { label: 'Confidential', value: 'confidential' },
+  { label: 'Secret', value: 'secret' },
+  { label: 'Top Secret', value: 'top_secret' },
+  { label: 'Top Secret/SCI', value: 'top_secret_sci' },
+  { label: 'Public Trust', value: 'public_trust' },
+  { label: 'Interim Clearances', value: 'interim_clearances' },
+  { label: 'Other', value: 'other' },
+] as const
+type SecurityClearanceValue = (typeof SECURITY_CLEARANCE_OPTIONS)[number]['value']
 const EXPERIENCE_SENIORITY_OPTIONS = [
   { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
   { label: 'Entry Level', value: 'entry_level' },
@@ -596,7 +607,8 @@ export function FilterModal() {
     activeModal === 'size' ||
     activeModal === 'benefits' ||
     activeModal === 'encouraged' ||
-    activeModal === 'languages'
+    activeModal === 'languages' ||
+    activeModal === 'security'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -672,6 +684,9 @@ export function FilterModal() {
   const [selectedTravelLand, setSelectedTravelLand] = useState<string[]>([])
   const [selectedBenefitsPerks, setSelectedBenefitsPerks] = useState<string[]>([])
   const [selectedEncouragedToApply, setSelectedEncouragedToApply] = useState<string[]>([])
+  const [selectedSecurityClearances, setSelectedSecurityClearances] = useState<
+    SecurityClearanceValue[]
+  >(SECURITY_CLEARANCE_OPTIONS.map((option) => option.value))
   const [selectedCompanySizes, setSelectedCompanySizes] = useState<string[]>([])
   const [foundingYearMinInput, setFoundingYearMinInput] = useState('')
   const [foundingYearMaxInput, setFoundingYearMaxInput] = useState('')
@@ -844,6 +859,15 @@ export function FilterModal() {
     if (activeModal !== 'encouraged') return
     setSelectedEncouragedToApply(filters.encouraged_to_apply ?? [])
   }, [activeModal, filters.encouraged_to_apply])
+
+  useEffect(() => {
+    if (activeModal !== 'security') return
+    setSelectedSecurityClearances(
+      filters.security_clearance?.length
+        ? (filters.security_clearance as SecurityClearanceValue[])
+        : SECURITY_CLEARANCE_OPTIONS.map((option) => option.value)
+    )
+  }, [activeModal, filters.security_clearance])
 
   useEffect(() => {
     if (activeModal !== 'size') return
@@ -1171,6 +1195,14 @@ export function FilterModal() {
         selectedEncouragedToApply.length ? selectedEncouragedToApply : undefined
       )
     }
+    if (activeModal === 'security') {
+      setFilter(
+        'security_clearance',
+        selectedSecurityClearances.length === SECURITY_CLEARANCE_OPTIONS.length
+          ? undefined
+          : selectedSecurityClearances
+      )
+    }
     if (activeModal === 'experience') {
       const { yoeMin, yoeMax } = getYoeBoundsFromSeniority(selectedExperienceSeniority)
       const normalizedRoleIndustry = normalizeExperienceRange(
@@ -1256,7 +1288,8 @@ export function FilterModal() {
           activeModal === 'size' ||
           activeModal === 'benefits' ||
           activeModal === 'encouraged' ||
-          activeModal === 'languages'
+          activeModal === 'languages' ||
+          activeModal === 'security'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -2060,6 +2093,48 @@ export function FilterModal() {
                       className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
                     />
                     <span className="text-sm text-gray-800">{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'security' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Security Clearance
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <div className="space-y-5">
+                {SECURITY_CLEARANCE_OPTIONS.map((option, index) => (
+                  <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={selectedSecurityClearances.includes(option.value)}
+                      onCheckedChange={() =>
+                        setSelectedSecurityClearances((current) =>
+                          current.includes(option.value)
+                            ? current.filter((item) => item !== option.value)
+                            : [...current, option.value]
+                        )
+                      }
+                      className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                    />
+                    <span className={`text-sm ${index === 0 ? 'text-green-600' : 'text-gray-800'}`}>
+                      {option.label}
+                    </span>
                   </label>
                 ))}
               </div>

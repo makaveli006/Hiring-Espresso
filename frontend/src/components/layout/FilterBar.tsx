@@ -78,6 +78,7 @@ export function FilterBar() {
     filters.stage_latest_round_amount_raised != null
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
+  const hasSelectedSecurityClearance = (filters.security_clearance?.length ?? 0) > 0
   const hasSelectedLanguages =
     Boolean(filters.language_requirements) || Boolean(filters.language_exclude_requirements)
   const hasSelectedShifts =
@@ -109,7 +110,8 @@ export function FilterBar() {
                 (chip.modal === 'shifts' && hasSelectedShifts) ||
                 (chip.modal === 'travel' && hasSelectedTravelRequirement) ||
                 (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||
-                (chip.modal === 'encouraged' && hasSelectedEncouragedToApply)
+                (chip.modal === 'encouraged' && hasSelectedEncouragedToApply) ||
+                (chip.modal === 'security' && hasSelectedSecurityClearance)
               }
               onClick={() =>
                 setActiveFilterModal(activeModal === chip.modal ? null : chip.modal)
