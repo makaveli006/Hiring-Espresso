@@ -195,6 +195,16 @@ interface FrequencySelectProps {
   ariaLabel: string
 }
 
+interface StageSearchFieldProps {
+  fieldId: string
+  activeFieldId: string | null
+  onActiveFieldChange: (fieldId: string | null) => void
+  label: string
+  value: string
+  onChange: (value: string) => void
+  ariaLabel: string
+}
+
 interface ExperienceRangeSliderProps {
   title: string
   expanded: boolean
@@ -264,6 +274,54 @@ function FrequencySelect({ value, onChange, ariaLabel }: FrequencySelectProps) {
         ))}
       </select>
       <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-700" />
+    </div>
+  )
+}
+
+function StageSearchField({
+  fieldId,
+  activeFieldId,
+  onActiveFieldChange,
+  label,
+  value,
+  onChange,
+  ariaLabel,
+}: StageSearchFieldProps) {
+  const open = activeFieldId === fieldId
+  return (
+    <div>
+      <h3 className="mb-3 text-sm font-semibold text-gray-900">{label}</h3>
+      <div className="relative">
+        <div className="relative rounded-md border border-gray-300 bg-white pl-3 pr-14 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+        <input
+          type="text"
+          aria-label={ariaLabel}
+          value={value}
+          onFocus={() => onActiveFieldChange(fieldId)}
+          onChange={(event) => {
+            onChange(event.target.value)
+            if (!open) onActiveFieldChange(fieldId)
+          }}
+          placeholder="Type to search..."
+          className="h-12 w-full text-sm text-gray-900 placeholder:text-gray-500 outline-none"
+        />
+        <span className="pointer-events-none absolute right-11 top-1/2 h-6 -translate-y-1/2 border-l border-gray-300" />
+          <button
+            type="button"
+            aria-label={`${label} dropdown`}
+            onClick={() => onActiveFieldChange(open ? null : fieldId)}
+            className="absolute right-0 top-0 h-12 w-11 text-gray-500 hover:text-gray-700"
+          >
+            <ChevronDown className="mx-auto h-5 w-5" />
+          </button>
+        </div>
+
+        {open && (
+          <div className="absolute left-0 right-0 top-[calc(100%+0.35rem)] z-20 rounded-md border border-gray-300 bg-white py-4 text-center text-sm text-gray-500 shadow-sm">
+            No options
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -505,6 +563,7 @@ export function FilterModal() {
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
     activeModal === 'travel' ||
+    activeModal === 'stage' ||
     activeModal === 'founding' ||
     activeModal === 'size' ||
     activeModal === 'benefits' ||
@@ -525,6 +584,13 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [activeStageDropdownField, setActiveStageDropdownField] = useState<string | null>(null)
+  const [stageInvestorsInput, setStageInvestorsInput] = useState('')
+  const [stageExcludeInvestorsInput, setStageExcludeInvestorsInput] = useState('')
+  const [stageLatestRoundInput, setStageLatestRoundInput] = useState('')
+  const [stageExcludeLatestRoundInput, setStageExcludeLatestRoundInput] = useState('')
+  const [stageRaisedInOrAfterInput, setStageRaisedInOrAfterInput] = useState('')
+  const [stageLatestRoundAmountInput, setStageLatestRoundAmountInput] = useState('')
   const [selectedTravelAir, setSelectedTravelAir] = useState<string[]>([])
   const [selectedTravelLand, setSelectedTravelLand] = useState<string[]>([])
   const [selectedBenefitsPerks, setSelectedBenefitsPerks] = useState<string[]>([])
@@ -590,6 +656,31 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'stage') return
+    setActiveStageDropdownField(null)
+    setStageInvestorsInput(filters.stage_investors ?? '')
+    setStageExcludeInvestorsInput(filters.stage_exclude_investors ?? '')
+    setStageLatestRoundInput(filters.stage_latest_round ?? '')
+    setStageExcludeLatestRoundInput(filters.stage_exclude_latest_round ?? '')
+    setStageRaisedInOrAfterInput(
+      filters.stage_raised_in_or_after != null ? String(filters.stage_raised_in_or_after) : ''
+    )
+    setStageLatestRoundAmountInput(
+      filters.stage_latest_round_amount_raised != null
+        ? String(filters.stage_latest_round_amount_raised)
+        : ''
+    )
+  }, [
+    activeModal,
+    filters.stage_exclude_investors,
+    filters.stage_exclude_latest_round,
+    filters.stage_investors,
+    filters.stage_latest_round,
+    filters.stage_latest_round_amount_raised,
+    filters.stage_raised_in_or_after,
+  ])
 
   useEffect(() => {
     if (activeModal !== 'travel') return
@@ -824,6 +915,24 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'stage') {
+      const normalizedInvestors = stageInvestorsInput.trim()
+      const normalizedExcludeInvestors = stageExcludeInvestorsInput.trim()
+      const normalizedLatestRound = stageLatestRoundInput.trim()
+      const normalizedExcludeLatestRound = stageExcludeLatestRoundInput.trim()
+      const normalizedRaisedInOrAfter = stageRaisedInOrAfterInput.trim()
+      const raisedInOrAfter =
+        /^\d{4}$/.test(normalizedRaisedInOrAfter) && Number(normalizedRaisedInOrAfter) > 0
+          ? Number(normalizedRaisedInOrAfter)
+          : undefined
+
+      setFilter('stage_investors', normalizedInvestors || undefined)
+      setFilter('stage_exclude_investors', normalizedExcludeInvestors || undefined)
+      setFilter('stage_latest_round', normalizedLatestRound || undefined)
+      setFilter('stage_exclude_latest_round', normalizedExcludeLatestRound || undefined)
+      setFilter('stage_raised_in_or_after', raisedInOrAfter)
+      setFilter('stage_latest_round_amount_raised', parseSalaryAmount(stageLatestRoundAmountInput))
+    }
     if (activeModal === 'travel') {
       setFilter('travel_air', selectedTravelAir.length ? selectedTravelAir : undefined)
       setFilter('travel_land', selectedTravelLand.length ? selectedTravelLand : undefined)
@@ -914,6 +1023,7 @@ export function FilterModal() {
           activeModal === 'commitment' ||
           activeModal === 'experience' ||
           activeModal === 'travel' ||
+          activeModal === 'stage' ||
           activeModal === 'founding' ||
           activeModal === 'size' ||
           activeModal === 'benefits' ||
@@ -1130,6 +1240,107 @@ export function FilterModal() {
                   ))}
                 </div>
               </section>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'stage' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Stage & Funding</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-6">
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="stage-investors"
+                      activeFieldId={activeStageDropdownField}
+                      onActiveFieldChange={setActiveStageDropdownField}
+                      label="Investors"
+                      value={stageInvestorsInput}
+                      onChange={setStageInvestorsInput}
+                      ariaLabel="Stage investors"
+                    />
+                    <StageSearchField
+                      fieldId="stage-exclude-investors"
+                      activeFieldId={activeStageDropdownField}
+                      onActiveFieldChange={setActiveStageDropdownField}
+                      label="Exclude Investors"
+                      value={stageExcludeInvestorsInput}
+                      onChange={setStageExcludeInvestorsInput}
+                      ariaLabel="Stage exclude investors"
+                    />
+                  </div>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <div className="space-y-6">
+                    <StageSearchField
+                      fieldId="stage-latest-round"
+                      activeFieldId={activeStageDropdownField}
+                      onActiveFieldChange={setActiveStageDropdownField}
+                      label="Latest Round"
+                      value={stageLatestRoundInput}
+                      onChange={setStageLatestRoundInput}
+                      ariaLabel="Stage latest round"
+                    />
+                    <StageSearchField
+                      fieldId="stage-exclude-latest-round"
+                      activeFieldId={activeStageDropdownField}
+                      onActiveFieldChange={setActiveStageDropdownField}
+                      label="Exclude Latest Round"
+                      value={stageExcludeLatestRoundInput}
+                      onChange={setStageExcludeLatestRoundInput}
+                      ariaLabel="Stage exclude latest round"
+                    />
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="mb-3 text-sm font-semibold text-gray-900">Raised In Or After</h3>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    aria-label="Stage raised in or after year"
+                    placeholder="Year"
+                    value={stageRaisedInOrAfterInput}
+                    onChange={(event) =>
+                      setStageRaisedInOrAfterInput(event.target.value.replace(/\D/g, '').slice(0, 4))
+                    }
+                    className="h-12 w-[120px] rounded-md border border-gray-300 px-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900"
+                  />
+                </section>
+
+                <section>
+                  <h3 className="mb-3 text-sm font-semibold text-gray-900">
+                    Latest Round Amount Raised
+                  </h3>
+                  <div className="relative">
+                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-500">
+                      $
+                    </span>
+                    <input
+                      type="text"
+                      aria-label="Stage latest round amount raised"
+                      value={stageLatestRoundAmountInput}
+                      onChange={(event) => setStageLatestRoundAmountInput(event.target.value)}
+                      placeholder=""
+                      className="h-12 w-full rounded-md border border-gray-300 bg-white pl-8 pr-3 text-sm text-gray-900 outline-none focus:border-gray-900"
+                    />
+                  </div>
+                </section>
+              </div>
             </div>
 
             <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">

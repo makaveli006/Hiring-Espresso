@@ -6,6 +6,14 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Stage & Funding` modal with Investors / Exclude Investors, Latest Round / Exclude Latest Round, Raised In Or After year, and Latest Round Amount Raised currency fields; added persisted stage filter state and company-chip active highlighting
+- [Created] `frontend/tests/e2e/filters/stage-funding-modal.spec.ts` — added E2E coverage for Stage & Funding modal field rendering and apply persistence behavior
+- [Fixed] `strict mode violation` in `frontend/tests/e2e/filters/stage-funding-modal.spec.ts` — disambiguated overlapping textbox accessible names by using `exact: true` in role selectors
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — split Stage & Funding content into separate individual cards for `Latest Round`, `Exclude Latest Round`, `Raised In Or After`, and `Latest Round Amount Raised` to match requested modal structure
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — removed card styling from Stage & Funding `Raised In Or After` and `Latest Round Amount Raised`; these now render as plain standalone sections below the dropdown cards
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — merged Stage & Funding `Latest Round` and `Exclude Latest Round` back into a single shared card while keeping `Raised In Or After` and `Latest Round Amount Raised` as plain sections
+- [Changed] `frontend/src/components/filters/FilterModal.tsx` — Stage & Funding dropdown-style fields now open a menu panel with `No options` when the chevron or input is focused, matching expected dropdown behavior
+- [Fixed] `frontend/src/components/filters/FilterModal.tsx` — Stage & Funding dropdown overlays are now mutually exclusive; opening one dropdown closes any previously open dropdown so only the currently active field shows `No options`
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Travel Requirement` modal with independent air/land travel multi-select options, fixed footer + scrollable body layout to keep last `Extensive` option visible, persisted `travel_air`/`travel_land` state, and chip active highlighting
 - [Created] `frontend/tests/e2e/filters/travel-modal.spec.ts` — added E2E coverage for Travel modal section rendering, last `Extensive` visibility/interactivity near footer, apply persistence, and chip highlight behavior
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Benefits & Perks` modal with independent multi-select options, two-column desktop layout, persisted `benefits_perks` filter state, and chip active highlighting when selections are applied
@@ -332,3 +340,5 @@ All notable changes to Hiring Espresso are documented here.
 - [Added] `CompanyLogo` sub-component with `size?: 'sm' | 'lg'` prop for reuse between base card and hover card
 - [Added] `Clock`, `MapPin`, `Eye`, `Send` to lucide-react imports in `JobCard.tsx`
 - [Changed] `frontend/src/components/jobs/JobCarousel.tsx` — `CardSkeleton` width `w-72` → `w-[340px]`; scroll amount 300 → 340 to match new card width
+- [Changed] rontend/src/components/filters/FilterModal.tsx — merged Stage & Funding Latest Round and Exclude Latest Round back into a single shared card while keeping Raised In Or After and Latest Round Amount Raised as plain sections
+- [Changed] rontend/src/components/filters/FilterModal.tsx — Stage & Funding dropdown-style fields now open a menu panel with No options when the chevron or input is focused, matching expected dropdown behavior

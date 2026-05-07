@@ -56,6 +56,13 @@ export function FilterBar() {
   const hasSelectedFoundingYear =
     filters.founding_year_min != null || filters.founding_year_max != null
   const hasSelectedCompanySize = (filters.company_size?.length ?? 0) > 0
+  const hasSelectedStageFunding =
+    Boolean(filters.stage_investors) ||
+    Boolean(filters.stage_exclude_investors) ||
+    Boolean(filters.stage_latest_round) ||
+    Boolean(filters.stage_exclude_latest_round) ||
+    filters.stage_raised_in_or_after != null ||
+    filters.stage_latest_round_amount_raised != null
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
   const hasSelectedTravelRequirement =
@@ -93,7 +100,8 @@ export function FilterBar() {
               active={
                 activeModal === chip.modal ||
                 (chip.modal === 'founding' && hasSelectedFoundingYear) ||
-                (chip.modal === 'size' && hasSelectedCompanySize)
+                (chip.modal === 'size' && hasSelectedCompanySize) ||
+                (chip.modal === 'stage' && hasSelectedStageFunding)
               }
               variant="company"
               onClick={() =>
@@ -124,9 +132,14 @@ export function FilterBar() {
           <span>🏢</span>
           <span className="text-teal-800 dark:text-teal-200 font-medium">
             Know a company that's hiring?{' '}
-            <button className="font-semibold text-teal-600 dark:text-teal-400 hover:underline">
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdufAHZxy8x4xCg6QVbuC9IZrritgpBh9DzcBlS0bWGFq1XQg/viewform?usp=publish-editor"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+            >
               Add a Company
-            </button>
+            </a>
           </span>
         </div>
       </div>
