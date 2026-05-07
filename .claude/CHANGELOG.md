@@ -380,3 +380,16 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] rontend/src/schemas/filter.schema.ts — added licenses_hide_required, licenses_keywords, and licenses_exclude_keywords fields
 - [Changed] rontend/src/components/layout/FilterBar.tsx — Licenses & Certifications chip now highlights when hide toggle is active or include/exclude keywords are set
 - [Added] rontend/tests/e2e/filters/licenses-modal.spec.ts — added e2e coverage for default state, single-open dropdown behavior, persistence, and chip highlight clearing
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — implemented Education modal with Associate/Bachelor/Master requirement selectors, expandable Degree Majors placeholder rows, and Apply persistence
+- [Changed] rontend/src/schemas/filter.schema.ts — added ducation_associates_requirement, ducation_bachelors_requirement, and ducation_masters_requirement fields
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Education chip now highlights when any degree requirement is set to required or preferred
+- [Added] rontend/tests/e2e/filters/education-modal.spec.ts — added e2e coverage for education modal rendering, selector behavior, majors expansion placeholder, persistence, and chip highlight clearing
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — extended Education modal with Doctorate Degree requirement row and Doctorate Degree Majors expandable placeholder
+- [Changed] rontend/src/schemas/filter.schema.ts — added ducation_doctorate_requirement field
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Education chip active state now includes doctorate requirement
+- [Changed] rontend/tests/e2e/filters/education-modal.spec.ts — expanded education tests to assert Doctorate Degree and neutral reset across all four degree rows
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — Education requirement buttons now have no default selected state on modal open and use circle-only pink selection (button background no longer turns pink)
+- [Changed] rontend/tests/e2e/filters/education-modal.spec.ts — updated selector assertions to validate circle-only active styling instead of full-button pink background

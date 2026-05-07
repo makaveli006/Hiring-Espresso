@@ -32,6 +32,11 @@ export function FilterBar() {
   const filters = useFilterStore((s) => s.filters)
   const hasSelectedDepartments = (filters.department?.length ?? 0) > 0
   const hasSelectedCommitment = (filters.commitment?.length ?? 0) > 0
+  const hasSelectedEducation =
+    Boolean(filters.education_associates_requirement) ||
+    Boolean(filters.education_bachelors_requirement) ||
+    Boolean(filters.education_masters_requirement) ||
+    Boolean(filters.education_doctorate_requirement)
   const hasSelectedExperience =
     (filters.experience_seniority?.length ?? 0) > 0 ||
     (filters.experience_role_type?.length ?? 0) > 0 ||
@@ -108,6 +113,7 @@ export function FilterBar() {
                 activeModal === chip.modal ||
                 (chip.modal === 'departments' && hasSelectedDepartments) ||
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
+                (chip.modal === 'education' && hasSelectedEducation) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary) ||
                 (chip.modal === 'languages' && hasSelectedLanguages) ||

@@ -64,6 +64,12 @@ const SHIFT_ONCALL_OPTIONS = [
   { label: 'Regular (once a week or more)', value: 'regular_once_a_week_or_more' },
 ] as const
 type ShiftOncallValue = (typeof SHIFT_ONCALL_OPTIONS)[number]['value']
+type EducationRequirement = 'required' | 'preferred' | 'not_mentioned' | undefined
+const EDUCATION_REQUIREMENT_OPTIONS = [
+  { label: 'Required', value: 'required' },
+  { label: 'Preferred', value: 'preferred' },
+  { label: 'Not Mentioned', value: 'not_mentioned' },
+] as const
 const SECURITY_CLEARANCE_OPTIONS = [
   { label: 'No explicit reference to clearance', value: 'no_explicit_reference_to_clearance' },
   { label: 'Confidential', value: 'confidential' },
@@ -597,6 +603,7 @@ export function FilterModal() {
     activeModal === 'departments' ||
     activeModal === 'salary' ||
     activeModal === 'commitment' ||
+    activeModal === 'education' ||
     activeModal === 'experience' ||
     activeModal === 'shifts' ||
     activeModal === 'travel' ||
@@ -626,6 +633,15 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [educationAssociatesRequirement, setEducationAssociatesRequirement] =
+    useState<EducationRequirement>(undefined)
+  const [educationBachelorsRequirement, setEducationBachelorsRequirement] =
+    useState<EducationRequirement>(undefined)
+  const [educationMastersRequirement, setEducationMastersRequirement] =
+    useState<EducationRequirement>(undefined)
+  const [educationDoctorateRequirement, setEducationDoctorateRequirement] =
+    useState<EducationRequirement>(undefined)
+  const [expandedEducationMajors, setExpandedEducationMajors] = useState<string[]>([])
   const [activeCompanyDropdownField, setActiveCompanyDropdownField] = useState<string | null>(null)
   const [companyNamesInput, setCompanyNamesInput] = useState('')
   const [companyExcludeNamesInput, setCompanyExcludeNamesInput] = useState('')
@@ -755,6 +771,21 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'education') return
+    setEducationAssociatesRequirement(filters.education_associates_requirement)
+    setEducationBachelorsRequirement(filters.education_bachelors_requirement)
+    setEducationMastersRequirement(filters.education_masters_requirement)
+    setEducationDoctorateRequirement(filters.education_doctorate_requirement)
+    setExpandedEducationMajors([])
+  }, [
+    activeModal,
+    filters.education_associates_requirement,
+    filters.education_bachelors_requirement,
+    filters.education_doctorate_requirement,
+    filters.education_masters_requirement,
+  ])
 
   useEffect(() => {
     if (activeModal !== 'company') return
@@ -1106,6 +1137,32 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'education') {
+      setFilter(
+        'education_associates_requirement',
+        educationAssociatesRequirement === 'not_mentioned' || educationAssociatesRequirement == null
+          ? undefined
+          : educationAssociatesRequirement
+      )
+      setFilter(
+        'education_bachelors_requirement',
+        educationBachelorsRequirement === 'not_mentioned' || educationBachelorsRequirement == null
+          ? undefined
+          : educationBachelorsRequirement
+      )
+      setFilter(
+        'education_masters_requirement',
+        educationMastersRequirement === 'not_mentioned' || educationMastersRequirement == null
+          ? undefined
+          : educationMastersRequirement
+      )
+      setFilter(
+        'education_doctorate_requirement',
+        educationDoctorateRequirement === 'not_mentioned' || educationDoctorateRequirement == null
+          ? undefined
+          : educationDoctorateRequirement
+      )
+    }
     if (activeModal === 'company') {
       const normalizedCompanyNames = companyNamesInput.trim()
       const normalizedExcludeCompanyNames = companyExcludeNamesInput.trim()
@@ -1305,6 +1362,7 @@ export function FilterModal() {
           activeModal === 'departments' ||
           activeModal === 'salary' ||
           activeModal === 'commitment' ||
+          activeModal === 'education' ||
           activeModal === 'experience' ||
           activeModal === 'shifts' ||
           activeModal === 'travel' ||
@@ -1469,6 +1527,116 @@ export function FilterModal() {
                 >
                   Clear all
                 </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'education' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Education</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <div className="space-y-10">
+                {[
+                  {
+                    title: "Associate's Degree",
+                    value: educationAssociatesRequirement,
+                    setValue: setEducationAssociatesRequirement,
+                    majorsId: 'associates',
+                    majorsLabel: "Associate's Degree Majors",
+                  },
+                  {
+                    title: "Bachelor's Degree",
+                    value: educationBachelorsRequirement,
+                    setValue: setEducationBachelorsRequirement,
+                    majorsId: 'bachelors',
+                    majorsLabel: "Bachelor's Degree Majors",
+                  },
+                  {
+                    title: "Master's Degree",
+                    value: educationMastersRequirement,
+                    setValue: setEducationMastersRequirement,
+                    majorsId: 'masters',
+                    majorsLabel: "Master's Degree Majors",
+                  },
+                  {
+                    title: 'Doctorate Degree',
+                    value: educationDoctorateRequirement,
+                    setValue: setEducationDoctorateRequirement,
+                    majorsId: 'doctorate',
+                    majorsLabel: 'Doctorate Degree Majors',
+                  },
+                ].map((degree) => {
+                  const majorsExpanded = expandedEducationMajors.includes(degree.majorsId)
+                  return (
+                    <section key={degree.majorsId}>
+                      <h3 className="mb-4 text-sm font-semibold text-gray-900">{degree.title}</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {EDUCATION_REQUIREMENT_OPTIONS.map((option) => {
+                          const selected = degree.value === option.value
+                          return (
+                            <button
+                              key={`${degree.majorsId}-${option.value}`}
+                              type="button"
+                              onClick={() => degree.setValue(option.value)}
+                              className={`inline-flex h-11 items-center gap-2 rounded-md border px-4 text-sm transition-colors ${
+                                selected
+                                  ? 'border-gray-500 bg-white text-gray-800'
+                                  : 'border-gray-400 bg-white text-gray-800 hover:bg-gray-50'
+                              }`}
+                            >
+                              <span
+                                className={`h-3.5 w-3.5 rounded-full border ${
+                                  selected ? 'border-pink-500 bg-pink-500' : 'border-gray-400 bg-white'
+                                }`}
+                              />
+                              <span>{option.label}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedEducationMajors((current) =>
+                            current.includes(degree.majorsId)
+                              ? current.filter((id) => id !== degree.majorsId)
+                              : [...current, degree.majorsId]
+                          )
+                        }
+                        className="mt-5 inline-flex items-center gap-3 text-sm font-medium text-gray-800"
+                      >
+                        <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-blue-400">
+                          <ChevronRight
+                            className={`h-3.5 w-3.5 text-white transition-transform ${
+                              majorsExpanded ? 'rotate-90' : ''
+                            }`}
+                          />
+                        </span>
+                        <span>{degree.majorsLabel}</span>
+                      </button>
+
+                      {majorsExpanded ? (
+                        <div className="mt-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">
+                          No major options yet.
+                        </div>
+                      ) : null}
+                    </section>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}
