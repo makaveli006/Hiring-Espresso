@@ -34,9 +34,9 @@ test.describe('Filter modal (Locations & Environments)', () => {
     const remoteLabel = dialog.locator('label').filter({ hasText: /^Remote$/ })
     const remoteCheckbox = remoteLabel.locator('[role="checkbox"]')
 
-    await expect(remoteCheckbox).toHaveAttribute('data-state', 'unchecked')
+    await expect(remoteCheckbox).not.toHaveAttribute('data-checked')
     await remoteLabel.click()
-    await expect(remoteCheckbox).toHaveAttribute('data-state', 'checked')
+    await expect(remoteCheckbox).toHaveAttribute('data-checked')
   })
 
   test('Apply button closes the modal', async ({ filterModalPage, page }) => {

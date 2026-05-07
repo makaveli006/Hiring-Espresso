@@ -11,7 +11,7 @@ export function LocationPill() {
     >
       <MapPin className="w-4 h-4 text-foreground shrink-0" />
       <div className="text-left min-w-0 leading-tight">
-        <p className="text-sm font-semibold text-foreground">United States</p>
+        <p className="text-sm font-semibold text-foreground">India</p>
         <p className="text-xs font-medium text-foreground truncate">
           Remote · Hybrid · Onsite · All Environments
         </p>

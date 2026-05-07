@@ -1,7 +1,11 @@
 import { test, expect } from '../../fixtures/app.fixture'
 import { ONSITE_JOBS, REMOTE_JOBS } from '../../utils/test-data'
+import { mockJobsAPI } from '../../utils/api-mocks'
 
 test.describe('Job cards', () => {
+  test.beforeEach(async ({ page }) => {
+    await mockJobsAPI(page)
+  })
   test('onsite job cards render with title and company', async ({ page }) => {
     await page.goto('/')
     for (const job of ONSITE_JOBS) {
@@ -45,7 +49,7 @@ test.describe('Job cards', () => {
     await page.goto('/')
     // Time-ago format: "3h" or "1d"
     const carousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const firstCard = carousel.locator('.w-72').first()
+    const firstCard = carousel.locator('.w-\\[286px\\]').first()
     await expect(firstCard.locator('span').filter({ hasText: /\d+[hd]/ })).toBeVisible()
   })
 
@@ -58,42 +62,52 @@ test.describe('Job cards', () => {
   test('save button toggles job saved state', async ({ page }) => {
     await page.goto('/')
     const carousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const firstCard = carousel.locator('.w-72').first()
+    const firstCard = carousel.locator('.w-\\[286px\\]').first()
+    // Save/unsave buttons are in the hover overlay; hover the card to reveal them.
+    // Use force:true to avoid Playwright scrolling the button behind the sticky header.
+    await firstCard.hover()
     const saveButton = firstCard.getByRole('button', { name: 'Save job' })
 
     await expect(saveButton).toBeVisible()
-    await saveButton.click()
+    await saveButton.click({ force: true })
     await expect(firstCard.getByRole('button', { name: 'Unsave job' })).toBeVisible()
   })
 
   test('saved job button can be toggled back to unsaved', async ({ page }) => {
     await page.goto('/')
     const carousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const firstCard = carousel.locator('.w-72').first()
+    const firstCard = carousel.locator('.w-\\[286px\\]').first()
+    await firstCard.hover()
 
-    await firstCard.getByRole('button', { name: 'Save job' }).click()
-    await firstCard.getByRole('button', { name: 'Unsave job' }).click()
+    await expect(firstCard.getByRole('button', { name: 'Save job' })).toBeVisible()
+    await firstCard.getByRole('button', { name: 'Save job' }).click({ force: true })
+    await expect(firstCard.getByRole('button', { name: 'Unsave job' })).toBeVisible()
+    await firstCard.getByRole('button', { name: 'Unsave job' }).click({ force: true })
     await expect(firstCard.getByRole('button', { name: 'Save job' })).toBeVisible()
   })
 
   test('save state persists across page reload (localStorage)', async ({ page }) => {
     await page.goto('/')
     const carousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const firstCard = carousel.locator('.w-72').first()
+    const firstCard = carousel.locator('.w-\\[286px\\]').first()
+    await firstCard.hover()
+    await expect(firstCard.getByRole('button', { name: 'Save job' })).toBeVisible()
+    await firstCard.getByRole('button', { name: 'Save job' }).click({ force: true })
 
-    await firstCard.getByRole('button', { name: 'Save job' }).click()
     await page.reload()
     await page.waitForLoadState('networkidle')
 
     const reloadedCarousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const reloadedCard = reloadedCarousel.locator('.w-72').first()
+    const reloadedCard = reloadedCarousel.locator('.w-\\[286px\\]').first()
+    await reloadedCard.hover()
     await expect(reloadedCard.getByRole('button', { name: 'Unsave job' })).toBeVisible()
   })
 
   test('job posting link opens correctly', async ({ page }) => {
     await page.goto('/')
     const carousel = page.locator('section').filter({ hasText: 'Latest Jobs in India' })
-    const firstCard = carousel.locator('.w-72').first()
+    const firstCard = carousel.locator('.w-\\[286px\\]').first()
+    // The "Job Posting" link is in the base card footer (visible without hover)
     const postingLink = firstCard.getByRole('link', { name: 'Job Posting' })
     await expect(postingLink).toBeVisible()
     await expect(postingLink).toHaveAttribute('target', '_blank')

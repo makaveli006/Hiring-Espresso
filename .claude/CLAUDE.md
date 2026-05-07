@@ -52,6 +52,17 @@ npm run lint
 npm run test
 ```
 
+## E2E Testing — CRITICAL
+
+**Always run Playwright tests with Chromium only.** Firefox and WebKit are not installed.
+
+```bash
+npx playwright test --project=chromium          # all tests
+npx playwright test --project=chromium <file>   # specific file
+```
+
+Never add Firefox, WebKit, mobile-chrome, or mobile-safari to `playwright.config.ts` projects. The config must only contain the `chromium` project.
+
 **Path alias:** `@/` resolves to `src/`
 
 **Key directories:**

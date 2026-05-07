@@ -8,6 +8,7 @@ import {
   Clock3,
   DollarSign,
   EyeOff,
+  MapPin,
   RotateCcw,
   Search,
   SlidersHorizontal,
@@ -3105,14 +3106,20 @@ export function FilterModal() {
 
             <div className="flex-1 overflow-y-auto px-6 py-4">
               <div className="mb-6">
-                <h3 className="mb-3 flex items-center gap-1 text-sm font-semibold text-foreground">
-                  📍 Locations
+                <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <MapPin className="h-4 w-4 text-pink-500" />
+                  <span>Locations</span>
                 </h3>
-                <input
-                  type="text"
-                  placeholder="Search cities, states, countries, or continents"
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-                />
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-500" />
+                  <input
+                    type="text"
+                    placeholder="Search cities, states, countries, or continents"
+                    className="w-full rounded-lg border border-border bg-background py-2 pl-16 pr-12 text-sm text-foreground outline-none focus:border-primary"
+                  />
+                  <span className="pointer-events-none absolute right-11 top-1/2 h-6 -translate-y-1/2 border-l border-gray-300" />
+                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                </div>
                 <button className="mt-2 text-sm font-medium text-primary">
                   Anywhere in the world
                 </button>

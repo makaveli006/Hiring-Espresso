@@ -93,6 +93,7 @@ function JobCardHover({ job }: { job: Job }) {
 
         <button
           onClick={() => (saved ? unsaveJob(job.id) : saveJob(job.id))}
+          aria-label={saved ? 'Unsave job' : 'Save job'}
           className={cn(
             'flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold rounded-full py-1.5 transition-colors',
             saved

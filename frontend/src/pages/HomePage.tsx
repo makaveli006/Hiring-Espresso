@@ -9,7 +9,7 @@ export function HomePage() {
   return (
     <div>
       <JobCarousel
-        title="Latest Jobs in United States"
+        title="Latest Jobs in India"
         jobs={onsite.data ?? []}
         isLoading={onsite.isLoading}
       />

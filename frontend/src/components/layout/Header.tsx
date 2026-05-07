@@ -34,16 +34,21 @@ export function Header({ simple = false }: HeaderProps) {
 
         <div className="ml-auto flex items-center gap-3">
           {/* Add Career Page button */}
-          <button className="hidden lg:flex items-center gap-1.5 bg-[#16a34a] hover:bg-[#15803d] text-white text-sm font-semibold px-4 py-2.5 rounded-full transition-colors shrink-0">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdufAHZxy8x4xCg6QVbuC9IZrritgpBh9DzcBlS0bWGFq1XQg/viewform?usp=publish-editor"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden lg:flex items-center gap-1.5 bg-[#16a34a] hover:bg-[#15803d] text-white text-sm font-semibold px-4 py-2.5 rounded-full transition-colors shrink-0"
+          >
             <span className="text-base leading-none">⊕</span>
             Add Career Page
-          </button>
+          </a>
 
           {/* Sign Up (signed-out only) */}
-          {isLoaded && !isSignedIn && (
+          {!isSignedIn && (
             <Button
               onClick={() => setAuthModalOpen(true, 'signUp')}
-              className="bg-[#facc15] hover:bg-[#eab308] text-black rounded-full text-sm px-5 py-2.5 font-semibold shrink-0"
+              className="bg-primary hover:bg-primary/90 text-white rounded-full text-sm px-5 py-2.5 font-semibold shrink-0"
             >
               Sign up
             </Button>

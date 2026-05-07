@@ -46,15 +46,17 @@ export function JobCarousel({ title, jobs, isLoading }: JobCarouselProps) {
           {title}
           <ArrowRight className="w-4 h-4 text-muted-foreground" />
         </h2>
-        <div className="flex gap-1">
+        <div className="flex gap-1" data-testid="carousel-scroll-controls">
           <button
             onClick={() => scroll('left')}
+            aria-label="Scroll left"
             className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
           >
             <ChevronLeft className="w-4 h-4 text-muted-foreground" />
           </button>
           <button
             onClick={() => scroll('right')}
+            aria-label="Scroll right"
             className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-accent transition-colors"
           >
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
