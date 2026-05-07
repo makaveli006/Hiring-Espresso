@@ -78,6 +78,8 @@ export function FilterBar() {
     filters.stage_latest_round_amount_raised != null
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
+  const hasSelectedLanguages =
+    Boolean(filters.language_requirements) || Boolean(filters.language_exclude_requirements)
   const hasSelectedShifts =
     Boolean(filters.shift_morning) ||
     Boolean(filters.shift_afternoon) ||
@@ -103,6 +105,7 @@ export function FilterBar() {
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary) ||
+                (chip.modal === 'languages' && hasSelectedLanguages) ||
                 (chip.modal === 'shifts' && hasSelectedShifts) ||
                 (chip.modal === 'travel' && hasSelectedTravelRequirement) ||
                 (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||

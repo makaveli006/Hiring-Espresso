@@ -53,6 +53,8 @@ export const filterSchema = z.object({
   industry_company_activities_keywords: z.string().optional(),
   industry_exclude_company_industries_keywords: z.string().optional(),
   industry_usajobs_policy: z.string().optional(),
+  language_requirements: z.string().optional(),
+  language_exclude_requirements: z.string().optional(),
   founding_year_min: z.number().optional(),
   founding_year_max: z.number().optional(),
   company_size: z.array(z.string()).optional(),

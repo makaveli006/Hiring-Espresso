@@ -224,6 +224,7 @@ interface StageSearchFieldProps {
   value: string
   onChange: (value: string) => void
   ariaLabel: string
+  openOnFocus?: boolean
 }
 
 interface ExperienceRangeSliderProps {
@@ -307,6 +308,7 @@ function StageSearchField({
   value,
   onChange,
   ariaLabel,
+  openOnFocus = false,
 }: StageSearchFieldProps) {
   const open = activeFieldId === fieldId
   return (
@@ -318,7 +320,9 @@ function StageSearchField({
           type="text"
           aria-label={ariaLabel}
           value={value}
-          onFocus={() => onActiveFieldChange(fieldId)}
+          onFocus={() => {
+            if (openOnFocus) onActiveFieldChange(fieldId)
+          }}
           onChange={(event) => {
             onChange(event.target.value)
             if (!open) onActiveFieldChange(fieldId)
@@ -591,7 +595,8 @@ export function FilterModal() {
     activeModal === 'founding' ||
     activeModal === 'size' ||
     activeModal === 'benefits' ||
-    activeModal === 'encouraged'
+    activeModal === 'encouraged' ||
+    activeModal === 'languages'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -631,6 +636,11 @@ export function FilterModal() {
     'include'
   )
   const [activeStageDropdownField, setActiveStageDropdownField] = useState<string | null>(null)
+  const [activeLanguagesDropdownField, setActiveLanguagesDropdownField] = useState<string | null>(
+    null
+  )
+  const [languageRequirementsInput, setLanguageRequirementsInput] = useState('')
+  const [languageExcludeRequirementsInput, setLanguageExcludeRequirementsInput] = useState('')
   const [stageInvestorsInput, setStageInvestorsInput] = useState('')
   const [stageExcludeInvestorsInput, setStageExcludeInvestorsInput] = useState('')
   const [stageLatestRoundInput, setStageLatestRoundInput] = useState('')
@@ -762,6 +772,13 @@ export function FilterModal() {
     filters.industry_organization_type,
     filters.industry_usajobs_policy,
   ])
+
+  useEffect(() => {
+    if (activeModal !== 'languages') return
+    setActiveLanguagesDropdownField(null)
+    setLanguageRequirementsInput(filters.language_requirements ?? '')
+    setLanguageExcludeRequirementsInput(filters.language_exclude_requirements ?? '')
+  }, [activeModal, filters.language_exclude_requirements, filters.language_requirements])
 
   useEffect(() => {
     if (activeModal !== 'stage') return
@@ -1103,6 +1120,15 @@ export function FilterModal() {
       setFilter('stage_raised_in_or_after', raisedInOrAfter)
       setFilter('stage_latest_round_amount_raised', parseSalaryAmount(stageLatestRoundAmountInput))
     }
+    if (activeModal === 'languages') {
+      const normalizedLanguageRequirements = languageRequirementsInput.trim()
+      const normalizedLanguageExcludeRequirements = languageExcludeRequirementsInput.trim()
+      setFilter('language_requirements', normalizedLanguageRequirements || undefined)
+      setFilter(
+        'language_exclude_requirements',
+        normalizedLanguageExcludeRequirements || undefined
+      )
+    }
     if (activeModal === 'shifts') {
       setFilter('shift_morning', selectedShiftMorning)
       setFilter('shift_afternoon', selectedShiftAfternoon)
@@ -1229,7 +1255,8 @@ export function FilterModal() {
           activeModal === 'founding' ||
           activeModal === 'size' ||
           activeModal === 'benefits' ||
-          activeModal === 'encouraged'
+          activeModal === 'encouraged' ||
+          activeModal === 'languages'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -1629,6 +1656,50 @@ export function FilterModal() {
                   </div>
                 </section>
               </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'languages' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">Languages</DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8">
+              <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                <div className="space-y-6">
+                  <StageSearchField
+                    fieldId="language-requirements"
+                    activeFieldId={activeLanguagesDropdownField}
+                    onActiveFieldChange={setActiveLanguagesDropdownField}
+                    label="Language Requirements"
+                    value={languageRequirementsInput}
+                    onChange={setLanguageRequirementsInput}
+                    ariaLabel="Language requirements"
+                    openOnFocus={false}
+                  />
+                  <StageSearchField
+                    fieldId="language-exclude-requirements"
+                    activeFieldId={activeLanguagesDropdownField}
+                    onActiveFieldChange={setActiveLanguagesDropdownField}
+                    label="Exclude Language Requirements"
+                    value={languageExcludeRequirementsInput}
+                    onChange={setLanguageExcludeRequirementsInput}
+                    ariaLabel="Exclude language requirements"
+                    openOnFocus={false}
+                  />
+                </div>
+              </section>
             </div>
 
             <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">

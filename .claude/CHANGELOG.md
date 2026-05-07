@@ -363,3 +363,10 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] rontend/src/schemas/filter.schema.ts — added shift_overtime_availability and shift_oncall_requirements filter fields
 - [Changed] rontend/src/components/layout/FilterBar.tsx — Shifts chip active state now includes overtime and oncall filters
 - [Changed] rontend/tests/e2e/filters/shifts-modal.spec.ts — expanded shifts tests to cover overtime and oncall UI defaults/persistence
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — implemented dedicated Languages modal with Language Requirements and Exclude Language Requirements dropdown-style search fields and Apply persistence
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Languages chip now highlights when language include/exclude values are selected
+- [Changed] rontend/src/schemas/filter.schema.ts — added language_requirements and language_exclude_requirements fields
+- [Added] rontend/tests/e2e/filters/languages-modal.spec.ts — added e2e coverage for modal rendering, single-open No options dropdown behavior, persistence, and chip highlight clearing
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — updated shared StageSearchField behavior so dropdown panels do not auto-expand on input focus; all dropdown-style modal fields now stay collapsed until explicit dropdown interaction
