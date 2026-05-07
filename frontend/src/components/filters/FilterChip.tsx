@@ -17,11 +17,11 @@ export function FilterChip({ label, active, variant = 'default', onClick }: Filt
         'shrink-0 rounded-[8px] border px-4 py-1.5 text-[13px] font-semibold leading-none transition-colors whitespace-nowrap',
         isCompany
           ? active
-            ? 'border-amber-500 bg-amber-50 text-amber-700'
-            : 'border-amber-400 text-amber-700 hover:border-amber-500'
+            ? 'border-amber-500 bg-amber-50 text-amber-500'
+            : 'border-amber-400 text-amber-400 hover:border-amber-500 hover:text-amber-500'
           : active
             ? 'border-primary bg-primary/5 text-primary'
-            : 'border-border text-gray-700 hover:border-gray-500'
+            : 'border-border text-gray-700 hover:border-gray-500 dark:border-white/50 dark:text-white dark:hover:border-white/70'
       )}
     >
       {label}

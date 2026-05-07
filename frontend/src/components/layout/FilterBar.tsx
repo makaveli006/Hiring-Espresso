@@ -184,7 +184,7 @@ export function FilterBar() {
               href="https://docs.google.com/forms/d/e/1FAIpQLSdufAHZxy8x4xCg6QVbuC9IZrritgpBh9DzcBlS0bWGFq1XQg/viewform?usp=publish-editor"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+              className="font-semibold text-teal-600 underline dark:text-teal-400 hover:underline"
             >
               Add a Company
             </a>
