@@ -48,6 +48,22 @@ const TRAVEL_REQUIREMENT_OPTIONS = [
   { label: 'Moderate', value: 'moderate' },
   { label: 'Extensive', value: 'extensive' },
 ] as const
+const SHIFT_REQUIREMENT_OPTIONS = [
+  { label: 'Required', value: 'required' },
+  { label: 'Optional', value: 'optional' },
+  { label: 'Not Indicated', value: 'not_indicated' },
+] as const
+const SHIFT_AVAILABILITY_OPTIONS = [
+  { label: 'Required', value: 'required' },
+  { label: 'Not Indicated', value: 'not_indicated' },
+  { label: "Doesn't Matter", value: 'doesnt_matter' },
+] as const
+const SHIFT_ONCALL_OPTIONS = [
+  { label: 'None', value: 'none' },
+  { label: 'Occasional (once a month or less)', value: 'occasional_once_a_month_or_less' },
+  { label: 'Regular (once a week or more)', value: 'regular_once_a_week_or_more' },
+] as const
+type ShiftOncallValue = (typeof SHIFT_ONCALL_OPTIONS)[number]['value']
 const EXPERIENCE_SENIORITY_OPTIONS = [
   { label: 'No Prior Experience Required', value: 'no_prior_experience_required' },
   { label: 'Entry Level', value: 'entry_level' },
@@ -567,6 +583,7 @@ export function FilterModal() {
     activeModal === 'salary' ||
     activeModal === 'commitment' ||
     activeModal === 'experience' ||
+    activeModal === 'shifts' ||
     activeModal === 'travel' ||
     activeModal === 'company' ||
     activeModal === 'industry' ||
@@ -620,6 +637,27 @@ export function FilterModal() {
   const [stageExcludeLatestRoundInput, setStageExcludeLatestRoundInput] = useState('')
   const [stageRaisedInOrAfterInput, setStageRaisedInOrAfterInput] = useState('')
   const [stageLatestRoundAmountInput, setStageLatestRoundAmountInput] = useState('')
+  const [selectedShiftMorning, setSelectedShiftMorning] = useState<
+    'required' | 'optional' | 'not_indicated' | undefined
+  >(undefined)
+  const [selectedShiftAfternoon, setSelectedShiftAfternoon] = useState<
+    'required' | 'optional' | 'not_indicated' | undefined
+  >(undefined)
+  const [selectedShiftOvernight, setSelectedShiftOvernight] = useState<
+    'required' | 'optional' | 'not_indicated' | undefined
+  >(undefined)
+  const [selectedShiftWeekendAvailability, setSelectedShiftWeekendAvailability] = useState<
+    'required' | 'not_indicated' | 'doesnt_matter'
+  >('doesnt_matter')
+  const [selectedShiftHolidayAvailability, setSelectedShiftHolidayAvailability] = useState<
+    'required' | 'not_indicated' | 'doesnt_matter'
+  >('doesnt_matter')
+  const [selectedShiftOvertimeAvailability, setSelectedShiftOvertimeAvailability] = useState<
+    'required' | 'not_indicated' | 'doesnt_matter'
+  >('doesnt_matter')
+  const [selectedShiftOncallRequirements, setSelectedShiftOncallRequirements] = useState<
+    ShiftOncallValue[]
+  >(SHIFT_ONCALL_OPTIONS.map((option) => option.value))
   const [selectedTravelAir, setSelectedTravelAir] = useState<string[]>([])
   const [selectedTravelLand, setSelectedTravelLand] = useState<string[]>([])
   const [selectedBenefitsPerks, setSelectedBenefitsPerks] = useState<string[]>([])
@@ -748,6 +786,30 @@ export function FilterModal() {
     filters.stage_latest_round,
     filters.stage_latest_round_amount_raised,
     filters.stage_raised_in_or_after,
+  ])
+
+  useEffect(() => {
+    if (activeModal !== 'shifts') return
+    setSelectedShiftMorning(filters.shift_morning)
+    setSelectedShiftAfternoon(filters.shift_afternoon)
+    setSelectedShiftOvernight(filters.shift_overnight)
+    setSelectedShiftWeekendAvailability(filters.shift_weekend_availability ?? 'doesnt_matter')
+    setSelectedShiftHolidayAvailability(filters.shift_holiday_availability ?? 'doesnt_matter')
+    setSelectedShiftOvertimeAvailability(filters.shift_overtime_availability ?? 'doesnt_matter')
+    setSelectedShiftOncallRequirements(
+      filters.shift_oncall_requirements?.length
+        ? filters.shift_oncall_requirements
+        : SHIFT_ONCALL_OPTIONS.map((option) => option.value)
+    )
+  }, [
+    activeModal,
+    filters.shift_afternoon,
+    filters.shift_holiday_availability,
+    filters.shift_morning,
+    filters.shift_oncall_requirements,
+    filters.shift_overnight,
+    filters.shift_overtime_availability,
+    filters.shift_weekend_availability,
   ])
 
   useEffect(() => {
@@ -1041,6 +1103,35 @@ export function FilterModal() {
       setFilter('stage_raised_in_or_after', raisedInOrAfter)
       setFilter('stage_latest_round_amount_raised', parseSalaryAmount(stageLatestRoundAmountInput))
     }
+    if (activeModal === 'shifts') {
+      setFilter('shift_morning', selectedShiftMorning)
+      setFilter('shift_afternoon', selectedShiftAfternoon)
+      setFilter('shift_overnight', selectedShiftOvernight)
+      setFilter(
+        'shift_weekend_availability',
+        selectedShiftWeekendAvailability === 'doesnt_matter'
+          ? undefined
+          : selectedShiftWeekendAvailability
+      )
+      setFilter(
+        'shift_holiday_availability',
+        selectedShiftHolidayAvailability === 'doesnt_matter'
+          ? undefined
+          : selectedShiftHolidayAvailability
+      )
+      setFilter(
+        'shift_overtime_availability',
+        selectedShiftOvertimeAvailability === 'doesnt_matter'
+          ? undefined
+          : selectedShiftOvertimeAvailability
+      )
+      setFilter(
+        'shift_oncall_requirements',
+        selectedShiftOncallRequirements.length === SHIFT_ONCALL_OPTIONS.length
+          ? undefined
+          : selectedShiftOncallRequirements
+      )
+    }
     if (activeModal === 'travel') {
       setFilter('travel_air', selectedTravelAir.length ? selectedTravelAir : undefined)
       setFilter('travel_land', selectedTravelLand.length ? selectedTravelLand : undefined)
@@ -1130,6 +1221,7 @@ export function FilterModal() {
           activeModal === 'salary' ||
           activeModal === 'commitment' ||
           activeModal === 'experience' ||
+          activeModal === 'shifts' ||
           activeModal === 'travel' ||
           activeModal === 'company' ||
           activeModal === 'industry' ||
@@ -1350,6 +1442,193 @@ export function FilterModal() {
                   ))}
                 </div>
               </section>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'shifts' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Shifts &amp; Schedules
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-8 pb-8">
+              <div className="space-y-8">
+                {[
+                  {
+                    title: 'Morning / Day / First Shift',
+                    value: selectedShiftMorning,
+                    onChange: setSelectedShiftMorning,
+                  },
+                  {
+                    title: 'Afternoon / Evening / Second Shift',
+                    value: selectedShiftAfternoon,
+                    onChange: setSelectedShiftAfternoon,
+                  },
+                  {
+                    title: 'Overnight / Graveyard / Third Shift',
+                    value: selectedShiftOvernight,
+                    onChange: setSelectedShiftOvernight,
+                  },
+                ].map((row) => (
+                  <section key={row.title}>
+                    <h3 className="mb-4 text-sm font-semibold text-gray-900">{row.title}</h3>
+                    <div className="flex flex-wrap gap-3">
+                      {SHIFT_REQUIREMENT_OPTIONS.map((option) => {
+                        const isSelected = row.value === option.value
+                        return (
+                          <button
+                            key={`${row.title}-${option.value}`}
+                            type="button"
+                            onClick={() =>
+                              row.onChange(isSelected ? undefined : option.value)
+                            }
+                            className={`inline-flex h-11 items-center gap-2 rounded-md border px-4 text-sm text-gray-800 transition-colors ${
+                              isSelected
+                                ? 'border-pink-500 bg-pink-50'
+                                : 'border-gray-400 bg-white hover:bg-gray-50'
+                            }`}
+                            aria-pressed={isSelected}
+                            aria-label={`${row.title} ${option.label}`}
+                          >
+                            <span
+                              className={`h-4 w-4 rounded-full border ${
+                                isSelected
+                                  ? 'border-pink-500 bg-pink-500'
+                                  : 'border-gray-700 bg-white'
+                              }`}
+                            />
+                            <span>{option.label}</span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </section>
+                ))}
+
+                <section>
+                  <h3 className="mb-4 text-sm font-semibold text-gray-900">Weekend Availability</h3>
+                  <div className="space-y-4">
+                    {SHIFT_AVAILABILITY_OPTIONS.map((option) => {
+                      const isSelected = selectedShiftWeekendAvailability === option.value
+                      return (
+                        <button
+                          key={`weekend-${option.value}`}
+                          type="button"
+                          onClick={() => setSelectedShiftWeekendAvailability(option.value)}
+                          className="flex items-center gap-3 text-left"
+                          aria-pressed={isSelected}
+                          aria-label={`Weekend Availability ${option.label}`}
+                        >
+                          <span
+                            className={`flex h-6 w-6 items-center justify-center rounded-full border ${
+                              isSelected ? 'border-pink-500' : 'border-gray-300'
+                            }`}
+                          >
+                            {isSelected ? (
+                              <span className="h-3.5 w-3.5 rounded-full bg-pink-500" />
+                            ) : null}
+                          </span>
+                          <span className="text-sm text-gray-800">{option.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="mb-4 text-sm font-semibold text-gray-900">Holiday Availability</h3>
+                  <div className="space-y-4">
+                    {SHIFT_AVAILABILITY_OPTIONS.map((option) => {
+                      const isSelected = selectedShiftHolidayAvailability === option.value
+                      return (
+                        <button
+                          key={`holiday-${option.value}`}
+                          type="button"
+                          onClick={() => setSelectedShiftHolidayAvailability(option.value)}
+                          className="flex items-center gap-3 text-left"
+                          aria-pressed={isSelected}
+                          aria-label={`Holiday Availability ${option.label}`}
+                        >
+                          <span
+                            className={`flex h-6 w-6 items-center justify-center rounded-full border ${
+                              isSelected ? 'border-pink-500' : 'border-gray-300'
+                            }`}
+                          >
+                            {isSelected ? (
+                              <span className="h-3.5 w-3.5 rounded-full bg-pink-500" />
+                            ) : null}
+                          </span>
+                          <span className="text-sm text-gray-800">{option.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="mb-4 text-sm font-semibold text-gray-900">Overtime Availability</h3>
+                  <div className="space-y-4">
+                    {SHIFT_AVAILABILITY_OPTIONS.map((option) => {
+                      const isSelected = selectedShiftOvertimeAvailability === option.value
+                      return (
+                        <button
+                          key={`overtime-${option.value}`}
+                          type="button"
+                          onClick={() => setSelectedShiftOvertimeAvailability(option.value)}
+                          className="flex items-center gap-3 text-left"
+                          aria-pressed={isSelected}
+                          aria-label={`Overtime Availability ${option.label}`}
+                        >
+                          <span
+                            className={`flex h-6 w-6 items-center justify-center rounded-full border ${
+                              isSelected ? 'border-pink-500' : 'border-gray-300'
+                            }`}
+                          >
+                            {isSelected ? (
+                              <span className="h-3.5 w-3.5 rounded-full bg-pink-500" />
+                            ) : null}
+                          </span>
+                          <span className="text-sm text-gray-800">{option.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="mb-4 text-sm font-semibold text-gray-900">Oncall Requirements</h3>
+                  <div className="space-y-4">
+                    {SHIFT_ONCALL_OPTIONS.map((option) => (
+                      <label key={option.value} className="flex cursor-pointer items-center gap-3">
+                        <Checkbox
+                          checked={selectedShiftOncallRequirements.includes(option.value)}
+                          onCheckedChange={() =>
+                            setSelectedShiftOncallRequirements((current) =>
+                              current.includes(option.value)
+                                ? current.filter((item) => item !== option.value)
+                                : [...current, option.value]
+                            )
+                          }
+                          className="size-6 rounded-[4px] border-gray-300 data-[checked]:border-pink-500 data-[checked]:bg-pink-500"
+                        />
+                        <span className="text-sm text-gray-800">{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </section>
+              </div>
             </div>
 
             <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">

@@ -348,3 +348,18 @@ All notable changes to Hiring Espresso are documented here.
 - [Changed] rontend/src/components/filters/FilterModal.tsx — merged Stage & Funding Latest Round and Exclude Latest Round back into a single shared card while keeping Raised In Or After and Latest Round Amount Raised as plain sections
 - [Changed] rontend/src/components/filters/FilterModal.tsx — Stage & Funding dropdown-style fields now open a menu panel with No options when the chevron or input is focused, matching expected dropdown behavior
 - [Added] rontend/src/components/filters/FilterModal.tsx + rontend/src/schemas/filter.schema.ts + rontend/src/components/layout/FilterBar.tsx — added USA Federal Jobs policy card under Industry modal with 3 radio-style options (include/only/exclude), persisted industry_usajobs_policy state, and Industry chip activation when non-default policy is selected
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — added a dedicated Shifts & Schedules modal with 3 rows (Morning, Afternoon, Overnight) and per-row single-select Required/Optional/Not Indicated controls persisted to filter state
+- [Changed] rontend/src/schemas/filter.schema.ts — added shift_morning, shift_afternoon, and shift_overnight enum filter fields for Shifts & Schedules
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Shifts & Schedules chip now highlights when any shift row filter is selected
+- [Added] rontend/tests/e2e/filters/shifts-modal.spec.ts — added coverage for modal rendering, per-row single-select behavior, deselect-on-second-click, and apply persistence
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — extended Shifts & Schedules modal with Weekend Availability and Holiday Availability sections (Required / Not Indicated / Doesn't Matter), with Doesn't Matter as neutral default and strict values persisted on Apply
+- [Changed] rontend/src/schemas/filter.schema.ts — added shift_weekend_availability and shift_holiday_availability filter fields for strict availability selections
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Shifts chip active state now includes weekend/holiday strict availability filters
+- [Changed] rontend/tests/e2e/filters/shifts-modal.spec.ts — expanded coverage for new availability sections, default neutral selection, persistence, and strict-filter clearing via Doesn't Matter
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — added Overtime Availability radio section and Oncall Requirements checkbox section to Shifts & Schedules modal, with neutral defaults and Apply persistence
+- [Changed] rontend/src/schemas/filter.schema.ts — added shift_overtime_availability and shift_oncall_requirements filter fields
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Shifts chip active state now includes overtime and oncall filters
+- [Changed] rontend/tests/e2e/filters/shifts-modal.spec.ts — expanded shifts tests to cover overtime and oncall UI defaults/persistence

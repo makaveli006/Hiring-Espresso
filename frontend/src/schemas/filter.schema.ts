@@ -25,6 +25,15 @@ export const filterSchema = z.object({
   salary_maximum_frequency: z.string().optional(),
   salary_listed_frequency: z.string().optional(),
   salary_currency: z.string().optional(),
+  shift_morning: z.enum(['required', 'optional', 'not_indicated']).optional(),
+  shift_afternoon: z.enum(['required', 'optional', 'not_indicated']).optional(),
+  shift_overnight: z.enum(['required', 'optional', 'not_indicated']).optional(),
+  shift_weekend_availability: z.enum(['required', 'not_indicated']).optional(),
+  shift_holiday_availability: z.enum(['required', 'not_indicated']).optional(),
+  shift_overtime_availability: z.enum(['required', 'not_indicated']).optional(),
+  shift_oncall_requirements: z
+    .array(z.enum(['none', 'occasional_once_a_month_or_less', 'regular_once_a_week_or_more']))
+    .optional(),
   travel_air: z.array(z.string()).optional(),
   travel_land: z.array(z.string()).optional(),
   stage_investors: z.string().optional(),

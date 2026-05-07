@@ -78,6 +78,14 @@ export function FilterBar() {
     filters.stage_latest_round_amount_raised != null
   const hasSelectedBenefitsPerks = (filters.benefits_perks?.length ?? 0) > 0
   const hasSelectedEncouragedToApply = (filters.encouraged_to_apply?.length ?? 0) > 0
+  const hasSelectedShifts =
+    Boolean(filters.shift_morning) ||
+    Boolean(filters.shift_afternoon) ||
+    Boolean(filters.shift_overnight) ||
+    Boolean(filters.shift_weekend_availability) ||
+    Boolean(filters.shift_holiday_availability) ||
+    Boolean(filters.shift_overtime_availability) ||
+    (filters.shift_oncall_requirements?.length ?? 0) > 0
   const hasSelectedTravelRequirement =
     (filters.travel_air?.length ?? 0) > 0 || (filters.travel_land?.length ?? 0) > 0
 
@@ -95,6 +103,7 @@ export function FilterBar() {
                 (chip.modal === 'commitment' && hasSelectedCommitment) ||
                 (chip.modal === 'experience' && hasSelectedExperience) ||
                 (chip.modal === 'salary' && hasSelectedSalary) ||
+                (chip.modal === 'shifts' && hasSelectedShifts) ||
                 (chip.modal === 'travel' && hasSelectedTravelRequirement) ||
                 (chip.modal === 'benefits' && hasSelectedBenefitsPerks) ||
                 (chip.modal === 'encouraged' && hasSelectedEncouragedToApply)
