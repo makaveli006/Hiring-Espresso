@@ -2,6 +2,12 @@ import { z } from 'zod'
 
 export const filterSchema = z.object({
   keyword: z.string().optional(),
+  job_title_terms: z.string().optional(),
+  job_title_boolean_query: z.string().optional(),
+  technical_keywords_terms: z.string().optional(),
+  technical_keywords_boolean_query: z.string().optional(),
+  job_description_boolean_query: z.string().optional(),
+  requirements_keywords_boolean_query: z.string().optional(),
   location: z.string().optional(),
   workplace_type: z.array(z.string()).optional(),
   commitment: z.array(z.string()).optional(),

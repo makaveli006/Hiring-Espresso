@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import {
+  ArrowUpRight,
   ChevronDown,
   ChevronRight,
   ChevronUp,
@@ -616,7 +617,8 @@ export function FilterModal() {
     activeModal === 'encouraged' ||
     activeModal === 'languages' ||
     activeModal === 'security' ||
-    activeModal === 'licenses'
+    activeModal === 'licenses' ||
+    activeModal === 'titles'
   const setActiveFilterModal = useUIStore((s) => s.setActiveFilterModal)
   const {
     filters,
@@ -633,6 +635,13 @@ export function FilterModal() {
   const [departmentSearchText, setDepartmentSearchText] = useState('')
   const [expandedGroups, setExpandedGroups] = useState<string[]>(ALL_DEPARTMENT_GROUP_TITLES)
   const [selectedCommitments, setSelectedCommitments] = useState<string[]>([])
+  const [jobTitleTermsInput, setJobTitleTermsInput] = useState('')
+  const [jobTitleBooleanQueryInput, setJobTitleBooleanQueryInput] = useState('')
+  const [technicalKeywordsTermsInput, setTechnicalKeywordsTermsInput] = useState('')
+  const [technicalKeywordsBooleanQueryInput, setTechnicalKeywordsBooleanQueryInput] = useState('')
+  const [jobDescriptionBooleanQueryInput, setJobDescriptionBooleanQueryInput] = useState('')
+  const [requirementsKeywordsBooleanQueryInput, setRequirementsKeywordsBooleanQueryInput] =
+    useState('')
   const [educationAssociatesRequirement, setEducationAssociatesRequirement] =
     useState<EducationRequirement>(undefined)
   const [educationBachelorsRequirement, setEducationBachelorsRequirement] =
@@ -771,6 +780,24 @@ export function FilterModal() {
     if (activeModal !== 'commitment') return
     setSelectedCommitments(filters.commitment ?? [])
   }, [activeModal, filters.commitment])
+
+  useEffect(() => {
+    if (activeModal !== 'titles') return
+    setJobTitleTermsInput(filters.job_title_terms ?? '')
+    setJobTitleBooleanQueryInput(filters.job_title_boolean_query ?? '')
+    setTechnicalKeywordsTermsInput(filters.technical_keywords_terms ?? '')
+    setTechnicalKeywordsBooleanQueryInput(filters.technical_keywords_boolean_query ?? '')
+    setJobDescriptionBooleanQueryInput(filters.job_description_boolean_query ?? '')
+    setRequirementsKeywordsBooleanQueryInput(filters.requirements_keywords_boolean_query ?? '')
+  }, [
+    activeModal,
+    filters.job_description_boolean_query,
+    filters.job_title_boolean_query,
+    filters.job_title_terms,
+    filters.requirements_keywords_boolean_query,
+    filters.technical_keywords_boolean_query,
+    filters.technical_keywords_terms,
+  ])
 
   useEffect(() => {
     if (activeModal !== 'education') return
@@ -1137,6 +1164,29 @@ export function FilterModal() {
     if (activeModal === 'commitment') {
       setCommitments(selectedCommitments)
     }
+    if (activeModal === 'titles') {
+      const normalizedTerms = jobTitleTermsInput.trim()
+      const normalizedBooleanQuery = jobTitleBooleanQueryInput.trim()
+      const normalizedTechnicalTerms = technicalKeywordsTermsInput.trim()
+      const normalizedTechnicalBooleanQuery = technicalKeywordsBooleanQueryInput.trim()
+      const normalizedDescriptionBooleanQuery = jobDescriptionBooleanQueryInput.trim()
+      const normalizedRequirementsBooleanQuery = requirementsKeywordsBooleanQueryInput.trim()
+      setFilter('job_title_terms', normalizedTerms || undefined)
+      setFilter('job_title_boolean_query', normalizedBooleanQuery || undefined)
+      setFilter('technical_keywords_terms', normalizedTechnicalTerms || undefined)
+      setFilter(
+        'technical_keywords_boolean_query',
+        normalizedTechnicalBooleanQuery || undefined
+      )
+      setFilter(
+        'job_description_boolean_query',
+        normalizedDescriptionBooleanQuery || undefined
+      )
+      setFilter(
+        'requirements_keywords_boolean_query',
+        normalizedRequirementsBooleanQuery || undefined
+      )
+    }
     if (activeModal === 'education') {
       setFilter(
         'education_associates_requirement',
@@ -1375,7 +1425,8 @@ export function FilterModal() {
           activeModal === 'encouraged' ||
           activeModal === 'languages' ||
           activeModal === 'security' ||
-          activeModal === 'licenses'
+          activeModal === 'licenses' ||
+          activeModal === 'titles'
             ? 'bg-white text-gray-900'
             : ''
         }`}
@@ -1527,6 +1578,147 @@ export function FilterModal() {
                 >
                   Clear all
                 </button>
+                <Button
+                  className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
+                  onClick={applyAndClose}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : activeModal === 'titles' ? (
+          <>
+            <DialogHeader className="border-b border-gray-200 px-6 py-4 pr-12">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Job Titles &amp; Keywords
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">
+              <div className="space-y-8">
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                <h3 className="text-sm font-semibold text-gray-900">Job Title Terms</h3>
+
+                <input
+                  aria-label="Job title terms"
+                  placeholder="Examples:  Strategy & Operations,  Nurse Practitioner,  Data Scientist"
+                  value={jobTitleTermsInput}
+                  onChange={(event) => setJobTitleTermsInput(event.target.value)}
+                  className="mt-4 h-11 w-full rounded-md border border-gray-400 px-3 text-sm text-pink-600 placeholder:text-gray-500 outline-none focus:border-gray-900"
+                />
+
+                <p className="mt-5 text-sm italic text-gray-500">
+                  Pro tip: Use &quot;@&quot; to search for job titles.
+                </p>
+
+                <textarea
+                  aria-label="Job title boolean query"
+                  placeholder="Add boolean query"
+                  value={jobTitleBooleanQueryInput}
+                  onChange={(event) => setJobTitleBooleanQueryInput(event.target.value)}
+                  className="mt-5 h-24 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900"
+                />
+
+                <a
+                  href="https://en.wikipedia.org/wiki/Full-text_search#Boolean_queries"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-1 text-sm italic text-gray-500 hover:text-gray-700"
+                >
+                  How boolean queries work
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900">Technical Keywords</h3>
+
+                  <input
+                    aria-label="Technical keywords terms"
+                    placeholder="Examples:  No Microsoft,  AWS or Azure,  Modern Frontend,  JS Full-"
+                    value={technicalKeywordsTermsInput}
+                    onChange={(event) => setTechnicalKeywordsTermsInput(event.target.value)}
+                    className="mt-4 h-11 w-full rounded-md border border-gray-400 px-3 text-sm text-pink-600 placeholder:text-gray-500 outline-none focus:border-gray-900"
+                  />
+
+                  <p className="mt-5 text-sm italic text-gray-500">
+                    Pro tip: Use &quot;@&quot; to search for available keywords.
+                  </p>
+
+                  <textarea
+                    aria-label="Technical keywords boolean query"
+                    placeholder="Add boolean query"
+                    value={technicalKeywordsBooleanQueryInput}
+                    onChange={(event) => setTechnicalKeywordsBooleanQueryInput(event.target.value)}
+                    className="mt-5 h-24 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900"
+                  />
+
+                  <a
+                    href="https://en.wikipedia.org/wiki/Full-text_search#Boolean_queries"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-1 text-sm italic text-gray-500 hover:text-gray-700"
+                  >
+                    How boolean queries work
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900">Entire Job Description</h3>
+
+                  <p className="mt-5 text-sm italic text-gray-500">
+                    Searches across the entire job description.
+                  </p>
+
+                  <textarea
+                    aria-label="Entire job description boolean query"
+                    placeholder="Add boolean query"
+                    value={jobDescriptionBooleanQueryInput}
+                    onChange={(event) => setJobDescriptionBooleanQueryInput(event.target.value)}
+                    className="mt-5 h-24 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900"
+                  />
+
+                  <a
+                    href="https://en.wikipedia.org/wiki/Full-text_search#Boolean_queries"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-1 text-sm italic text-gray-500 hover:text-gray-700"
+                  >
+                    How boolean queries work
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                </section>
+
+                <section className="rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
+                  <h3 className="text-sm font-semibold text-gray-900">Requirements Keywords</h3>
+
+                  <textarea
+                    aria-label="Requirements keywords boolean query"
+                    placeholder="Add boolean query"
+                    value={requirementsKeywordsBooleanQueryInput}
+                    onChange={(event) =>
+                      setRequirementsKeywordsBooleanQueryInput(event.target.value)
+                    }
+                    className="mt-5 h-24 w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:border-gray-900"
+                  />
+
+                  <a
+                    href="https://en.wikipedia.org/wiki/Full-text_search#Boolean_queries"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-1 text-sm italic text-gray-500 hover:text-gray-700"
+                  >
+                    How boolean queries work
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                </section>
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4">
+              <div className="flex justify-end">
                 <Button
                   className="h-12 w-full rounded-md bg-pink-500 text-sm font-semibold text-white hover:bg-pink-600 sm:w-[320px]"
                   onClick={applyAndClose}

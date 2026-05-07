@@ -393,3 +393,18 @@ All notable changes to Hiring Espresso are documented here.
 
 - [Changed] rontend/src/components/filters/FilterModal.tsx — Education requirement buttons now have no default selected state on modal open and use circle-only pink selection (button background no longer turns pink)
 - [Changed] rontend/tests/e2e/filters/education-modal.spec.ts — updated selector assertions to validate circle-only active styling instead of full-button pink background
+
+- [Added] rontend/src/components/filters/FilterModal.tsx — implemented dedicated Job Titles & Keywords modal with editable job title terms input, boolean query textarea, pro-tip copy, and external helper link to Wikipedia boolean query docs
+- [Changed] rontend/src/schemas/filter.schema.ts — added job_title_terms and job_title_boolean_query fields
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Job Titles & Keywords chip now highlights when terms or boolean query has value
+- [Added] rontend/tests/e2e/filters/job-titles-modal.spec.ts — added e2e coverage for modal rendering, helper link URL/target/rel, persistence, and chip highlight clearing
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — added second Technical Keywords card below Job Title Terms in Job Titles & Keywords modal, including examples input, pro-tip text, boolean query textarea, and Wikipedia boolean-query help link
+- [Changed] rontend/src/schemas/filter.schema.ts — added 	echnical_keywords_terms and 	echnical_keywords_boolean_query fields
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Job Titles & Keywords chip active state now includes technical keywords fields
+- [Changed] rontend/tests/e2e/filters/job-titles-modal.spec.ts — expanded coverage for Technical Keywords card rendering, link assertions, persistence, and clear-to-inactive behavior
+
+- [Changed] rontend/src/components/filters/FilterModal.tsx — added Entire Job Description card below Technical Keywords in Job Titles & Keywords modal with description copy, boolean query textarea, and Wikipedia boolean-query help link
+- [Changed] rontend/src/schemas/filter.schema.ts — added job_description_boolean_query field
+- [Changed] rontend/src/components/layout/FilterBar.tsx — Job Titles & Keywords chip active logic now includes entire job description query
+- [Changed] rontend/tests/e2e/filters/job-titles-modal.spec.ts — expanded coverage for Entire Job Description card rendering, link count/URL checks, persistence, and clear behavior
