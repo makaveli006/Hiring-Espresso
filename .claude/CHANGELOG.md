@@ -6,6 +6,12 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Fixed] `/saved` route tab alignment — changed route from `ContentLayout` (max-w-2xl, 672px narrow) to `RootLayout hideFilterBar` (full-width) so Tracker/Saved Searches/Boards tabs render left-aligned at the page edge instead of centered in a narrow column
+- [Changed] `frontend/src/layouts/RootLayout.tsx` — added optional `hideFilterBar` prop so `/saved` can use the full-width layout without showing the job-filter chip row
+- [Changed] `frontend/src/App.tsx` — `/saved` route now uses `RootLayout hideFilterBar` instead of `ContentLayout`
+- [Changed] `frontend/src/pages/SavedJobsPage.tsx` — `TrackerView` outer div uses `-mx-4 -mt-6` to break out of `main`'s padding, tab border now spans full viewport width edge-to-edge; removed double-centering `mx-auto max-w-7xl` inner container; content sections use `px-4 sm:px-8 py-6` for consistent left-aligned padding
+- [Changed] `frontend/src/pages/SavedJobsPage.tsx` — tab bar gets `pt-2` (8px) so tab text sits ~20px below the header border matching the reference; empty state card changed from `p-16` to `min-h-[280px] flex flex-col items-center justify-center px-8` so text is vertically centered in a ~280px tall card
+
 - [Added] `frontend/src/pages/SavedJobsPage.tsx` — built signed-in TrackerView: three top-level tabs (Tracker / Saved Searches / Boards), five status chips (Saved / Applied / Interviewing / Rejected / Hidden) with pink active border, dynamic section heading with count, empty-state card with "adding jobs" link to /, and JobCard grid when jobs exist
 - [Changed] `frontend/src/store/useJobStore.ts` — added `interviewingJobIds`, `rejectedJobIds` arrays, `markInterviewing`, `markRejected` actions, and `isJobInterviewing`, `isJobRejected` selectors; persisted via existing zustand/persist
 - [Changed] `frontend/src/pages/SavedJobsPage.tsx` — restyled signed-out empty state to match hiring.cafe tracker reference: white background, normalized typography sizes (28px title, 15px body, 13px pill/footer), tightened max-width to 640px, added `Frequently Asked Questions` mustard heading, collapsed FAQs by default, kept brand as `Hiring Espresso` per project rule

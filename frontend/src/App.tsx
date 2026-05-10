@@ -71,9 +71,9 @@ const savedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/saved',
   component: () => (
-    <ContentLayout>
+    <RootLayout hideFilterBar>
       <SavedJobsPage />
-    </ContentLayout>
+    </RootLayout>
   ),
 })
 

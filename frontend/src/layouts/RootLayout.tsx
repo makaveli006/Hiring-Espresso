@@ -8,7 +8,7 @@ import { FilterModal } from '@/components/filters/FilterModal'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { useUIStore } from '@/store/useUIStore'
 
-export function RootLayout({ children }: { children: ReactNode }) {
+export function RootLayout({ children, hideFilterBar = false }: { children: ReactNode; hideFilterBar?: boolean }) {
   const theme = useUIStore((s) => s.theme)
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <FilterBar />
+      {!hideFilterBar && <FilterBar />}
       <main className="max-w-[1456px] mx-auto px-4 py-6 pb-20 md:pb-6 flex-1 w-full">
         {children}
       </main>

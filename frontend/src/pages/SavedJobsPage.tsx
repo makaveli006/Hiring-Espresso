@@ -163,31 +163,29 @@ function TrackerView() {
   ]
 
   return (
-    <div className="min-h-[60vh] font-sans">
-      {/* Top section tabs */}
-      <div className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <nav className="flex gap-6">
-            {sections.map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => setActiveSection(id)}
-                className={cn(
-                  'py-3 text-[14px] font-medium transition-colors border-b-2 -mb-px',
-                  activeSection === id
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground',
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-        </div>
+    <div className="min-h-[60vh] font-sans -mx-4 -mt-6">
+      {/* Top section tabs — full-width border spanning edge to edge */}
+      <div className="border-b border-border px-4 sm:px-8 pt-2">
+        <nav className="flex gap-6">
+          {sections.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => setActiveSection(id)}
+              className={cn(
+                'py-3 text-[14px] font-medium transition-colors border-b-2 -mb-px',
+                activeSection === id
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
       </div>
 
       {activeSection === 'tracker' ? (
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="px-4 sm:px-8 py-6">
           {/* Status chips */}
           <div className="flex flex-wrap gap-2">
             {CHIPS.map(({ id, label }) => (
@@ -214,7 +212,7 @@ function TrackerView() {
           {/* Content */}
           <div className="mt-4">
             {jobs.length === 0 ? (
-              <div className="rounded-xl border border-border bg-white p-16 text-center dark:bg-card">
+              <div className="rounded-xl border border-border bg-white px-8 min-h-[280px] flex flex-col items-center justify-center text-center dark:bg-card">
                 <p className="text-[15px] font-semibold text-foreground">
                   No {CHIP_LABEL[activeChip]} jobs
                 </p>
@@ -236,7 +234,7 @@ function TrackerView() {
           </div>
         </div>
       ) : (
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 text-center">
+        <div className="px-4 sm:px-8 py-16 text-center">
           <p className="text-[14px] text-muted-foreground">Coming soon</p>
         </div>
       )}
