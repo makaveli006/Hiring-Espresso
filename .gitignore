@@ -187,6 +187,13 @@ override.tf.json
 .stylelintcache
 .prettiercache
 
+# ─── Claude / Playwright QA artefacts ────────────────────────────────────────
+.playwright-mcp/
+/*.png
+/*.jpg
+/*.jpeg
+.claude/screenshots/
+
 # ─── Misc ─────────────────────────────────────────────────────────────────────
 *.bak
 *.tmp
