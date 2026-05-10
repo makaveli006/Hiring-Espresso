@@ -36,14 +36,14 @@ if ($file -match '\.(ts|tsx)$') {
     $frontendDir = "C:\Users\subin\OneDrive\Desktop\Hiring-Espresso\frontend"
 
     Write-Host "--- eslint $file ---"
-    $lintOut  = & npm run lint --prefix $frontendDir 2>&1
-    $lintOut  | Out-Host
+    $lintOut  = cmd.exe /c "cd /d `"$frontendDir`" && npm run lint" 2>&1
     $lintExit = $LASTEXITCODE
+    $lintOut  | Out-Host
 
     Write-Host "--- tsc --noEmit ---"
-    $tscOut  = & npx --prefix $frontendDir tsc --noEmit 2>&1
-    $tscOut  | Out-Host
+    $tscOut  = cmd.exe /c "cd /d `"$frontendDir`" && npx tsc --noEmit" 2>&1
     $tscExit = $LASTEXITCODE
+    $tscOut  | Out-Host
 
     if ($lintExit -ne 0 -or $tscExit -ne 0) {
         @{
