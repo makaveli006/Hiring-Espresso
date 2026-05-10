@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Changed] `frontend/src/pages/SavedJobsPage.tsx` — restyled signed-out empty state to match hiring.cafe tracker reference: white background, normalized typography sizes (28px title, 15px body, 13px pill/footer), tightened max-width to 640px, added `Frequently Asked Questions` mustard heading, collapsed FAQs by default, kept brand as `Hiring Espresso` per project rule
+- [Added] `.claude/CLAUDE.md` + `.github/copilot-instructions.md` — `Brand Name — CRITICAL` section forbidding renaming `Hiring Espresso` to `HiringCafe` / `hiring.cafe`
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Industry` modal with three cards (`Organization Type`, `Company Industry`, `Company Activities & Keywords`), include/exclude dropdown-search fields, persisted industry filter state, and company-chip active highlighting
 - [Created] `frontend/tests/e2e/filters/industry-modal.spec.ts` — added E2E coverage for Industry modal rendering, mutually exclusive `No options` dropdown panel behavior, and apply persistence/chip highlight
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Company` modal with include/exclude company names and include/exclude HQ countries fields, persisted company filter state, and company-chip active highlighting

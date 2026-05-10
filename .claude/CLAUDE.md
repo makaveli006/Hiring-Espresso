@@ -13,6 +13,12 @@ feature/xxx  →  develop  →  (release branch)  →  main
 
 ---
 
+## Brand Name — CRITICAL
+
+**Never rename the brand from `Hiring Espresso`.** This is the project's own brand name — do not replace it with `HiringCafe`, `hiring.cafe`, or any other name. The reference site is only used for design inspiration; the product identity is always `Hiring Espresso`.
+
+---
+
 ## Project Structure
 
 ```

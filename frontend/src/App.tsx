@@ -7,6 +7,7 @@ import { TermsPage } from '@/pages/TermsPage'
 import { TalentNetworkPage } from '@/pages/TalentNetworkPage'
 import { AboutPage } from '@/pages/AboutPage'
 import { EmployersPage } from '@/pages/EmployersPage'
+import { SavedJobsPage } from '@/pages/SavedJobsPage'
 
 const rootRoute = createRootRoute()
 
@@ -66,6 +67,16 @@ const employersRoute = createRoute({
   component: () => <EmployersPage />,
 })
 
+const savedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/saved',
+  component: () => (
+    <ContentLayout>
+      <SavedJobsPage />
+    </ContentLayout>
+  ),
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   privacyRoute,
@@ -73,6 +84,7 @@ const routeTree = rootRoute.addChildren([
   talentRoute,
   aboutRoute,
   employersRoute,
+  savedRoute,
 ])
 
 const router = createRouter({ routeTree })
