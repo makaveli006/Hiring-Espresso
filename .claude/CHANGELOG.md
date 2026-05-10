@@ -6,6 +6,8 @@ All notable changes to Hiring Espresso are documented here.
 
 ## [Unreleased]
 
+- [Added] `frontend/src/pages/SavedJobsPage.tsx` — built signed-in TrackerView: three top-level tabs (Tracker / Saved Searches / Boards), five status chips (Saved / Applied / Interviewing / Rejected / Hidden) with pink active border, dynamic section heading with count, empty-state card with "adding jobs" link to /, and JobCard grid when jobs exist
+- [Changed] `frontend/src/store/useJobStore.ts` — added `interviewingJobIds`, `rejectedJobIds` arrays, `markInterviewing`, `markRejected` actions, and `isJobInterviewing`, `isJobRejected` selectors; persisted via existing zustand/persist
 - [Changed] `frontend/src/pages/SavedJobsPage.tsx` — restyled signed-out empty state to match hiring.cafe tracker reference: white background, normalized typography sizes (28px title, 15px body, 13px pill/footer), tightened max-width to 640px, added `Frequently Asked Questions` mustard heading, collapsed FAQs by default, kept brand as `Hiring Espresso` per project rule
 - [Added] `.claude/CLAUDE.md` + `.github/copilot-instructions.md` — `Brand Name — CRITICAL` section forbidding renaming `Hiring Espresso` to `HiringCafe` / `hiring.cafe`
 - [Added] `frontend/src/components/filters/FilterModal.tsx` + `frontend/src/schemas/filter.schema.ts` + `frontend/src/components/layout/FilterBar.tsx` — implemented dedicated `Industry` modal with three cards (`Organization Type`, `Company Industry`, `Company Activities & Keywords`), include/exclude dropdown-search fields, persisted industry filter state, and company-chip active highlighting

@@ -1,11 +1,19 @@
+import { useState } from 'react'
 import { useAuth } from '@clerk/clerk-react'
+import { Link } from '@tanstack/react-router'
 import { useUIStore } from '@/store/useUIStore'
+import { useJobStore } from '@/store/useJobStore'
+import { JobCard } from '@/components/jobs/JobCard'
+import { MOCK_JOBS } from '@/data/mockJobs'
+import { cn } from '@/lib/utils'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+
+// ─── Bear illustration ────────────────────────────────────────────────────────
 
 function BearWithChecklist() {
   return (
@@ -75,6 +83,8 @@ function BearWithChecklist() {
   )
 }
 
+// ─── FAQ data ─────────────────────────────────────────────────────────────────
+
 const faqs = [
   {
     question: 'What is Application Tracker?',
@@ -102,16 +112,146 @@ const faqs = [
   },
 ]
 
+// ─── Tracker (signed-in) ──────────────────────────────────────────────────────
+
+type Section = 'tracker' | 'saved-searches' | 'boards'
+type Chip = 'saved' | 'applied' | 'interviewing' | 'rejected' | 'hidden'
+
+const CHIPS: { id: Chip; label: string }[] = [
+  { id: 'saved', label: 'Saved' },
+  { id: 'applied', label: 'Applied' },
+  { id: 'interviewing', label: 'Interviewing' },
+  { id: 'rejected', label: 'Rejected' },
+  { id: 'hidden', label: 'Hidden' },
+]
+
+const CHIP_LABEL: Record<Chip, string> = {
+  saved: 'saved',
+  applied: 'applied',
+  interviewing: 'interviewing',
+  rejected: 'rejected',
+  hidden: 'hidden',
+}
+
+function TrackerView() {
+  const [activeSection, setActiveSection] = useState<Section>('tracker')
+  const [activeChip, setActiveChip] = useState<Chip>('saved')
+
+  const {
+    savedJobIds,
+    appliedJobIds,
+    interviewingJobIds,
+    rejectedJobIds,
+    hiddenJobIds,
+  } = useJobStore()
+
+  const idsByChip: Record<Chip, string[]> = {
+    saved: savedJobIds,
+    applied: appliedJobIds,
+    interviewing: interviewingJobIds,
+    rejected: rejectedJobIds,
+    hidden: hiddenJobIds,
+  }
+
+  const activeIds = idsByChip[activeChip]
+  const jobs = MOCK_JOBS.filter((j) => activeIds.includes(j.id))
+
+  const sections: { id: Section; label: string }[] = [
+    { id: 'tracker', label: 'Tracker' },
+    { id: 'saved-searches', label: 'Saved Searches' },
+    { id: 'boards', label: 'Boards' },
+  ]
+
+  return (
+    <div className="min-h-[60vh] font-sans">
+      {/* Top section tabs */}
+      <div className="border-b border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <nav className="flex gap-6">
+            {sections.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setActiveSection(id)}
+                className={cn(
+                  'py-3 text-[14px] font-medium transition-colors border-b-2 -mb-px',
+                  activeSection === id
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {activeSection === 'tracker' ? (
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+          {/* Status chips */}
+          <div className="flex flex-wrap gap-2">
+            {CHIPS.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => setActiveChip(id)}
+                className={cn(
+                  'rounded-full border px-4 py-1.5 text-[13px] font-medium transition-colors',
+                  activeChip === id
+                    ? 'border-primary text-primary'
+                    : 'border-border text-muted-foreground hover:border-foreground hover:text-foreground',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Section heading */}
+          <h2 className="mt-5 text-[15px] font-bold text-foreground">
+            Your {CHIP_LABEL[activeChip]} jobs ({jobs.length})
+          </h2>
+
+          {/* Content */}
+          <div className="mt-4">
+            {jobs.length === 0 ? (
+              <div className="rounded-xl border border-border bg-white p-16 text-center dark:bg-card">
+                <p className="text-[15px] font-semibold text-foreground">
+                  No {CHIP_LABEL[activeChip]} jobs
+                </p>
+                <p className="mt-1.5 text-[13px] text-muted-foreground">
+                  Start{' '}
+                  <Link to="/" className="text-blue-600 hover:underline dark:text-blue-400">
+                    adding jobs
+                  </Link>{' '}
+                  to your list.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-5">
+                {jobs.map((job, i) => (
+                  <JobCard key={job.id} job={job} index={i} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 text-center">
+          <p className="text-[14px] text-muted-foreground">Coming soon</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export function SavedJobsPage() {
   const { isSignedIn } = useAuth()
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
 
   if (isSignedIn) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center font-sans">
-        <p className="text-base font-medium text-foreground">HelloWorld</p>
-      </div>
-    )
+    return <TrackerView />
   }
 
   return (
