@@ -247,8 +247,10 @@ function TrackerView() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function SavedJobsPage() {
-  const { isSignedIn } = useAuth()
+  const { isLoaded, isSignedIn } = useAuth()
   const setAuthModalOpen = useUIStore((s) => s.setAuthModalOpen)
+
+  if (!isLoaded) return null
 
   if (isSignedIn) {
     return <TrackerView />
