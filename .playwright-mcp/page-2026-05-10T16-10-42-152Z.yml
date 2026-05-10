@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - link [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e12]
+        - generic [ref=e15]:
+          - img [ref=e17]
+          - textbox "Search" [ref=e19]
+          - button [ref=e20] [cursor=pointer]
+      - generic [ref=e21]:
+        - generic [ref=e23] [cursor=pointer]: Sign up
+        - button [ref=e25] [cursor=pointer]:
+          - img [ref=e26]
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic:
+          - button "animation":
+            - img
+        - generic [ref=e32]:
+          - generic [ref=e33]: HiringCafe Application Tracker
+          - generic [ref=e34]: Your saved jobs will appear here
+          - generic [ref=e35]: The Application Tracker helps you keep track of your job search progress. It's free and easy to use.
+        - generic [ref=e36]:
+          - link "Log in to view" [ref=e37] [cursor=pointer]:
+            - /url: /auth
+          - generic [ref=e38]: 100% free, forever!
+      - generic [ref=e39]:
+        - generic [ref=e40]: Frequently Asked Questions
+        - generic [ref=e41]:
+          - heading "What is Application Tracker?" [level=2] [ref=e43]:
+            - button "What is Application Tracker?" [ref=e44] [cursor=pointer]:
+              - generic [ref=e45]: What is Application Tracker?
+              - img [ref=e46]
+          - heading "How does it work?" [level=2] [ref=e49]:
+            - button "How does it work?" [ref=e50] [cursor=pointer]:
+              - generic [ref=e51]: How does it work?
+              - img [ref=e52]
+          - heading "How is it different from saving jobs on a spreadsheet?" [level=2] [ref=e55]:
+            - button "How is it different from saving jobs on a spreadsheet?" [ref=e56] [cursor=pointer]:
+              - generic [ref=e57]: How is it different from saving jobs on a spreadsheet?
+              - img [ref=e58]
+          - heading "Is it free?" [level=2] [ref=e61]:
+            - button "Is it free?" [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]: Is it free?
+              - img [ref=e64]
+          - heading "Can companies see my Application Tracker?" [level=2] [ref=e67]:
+            - button "Can companies see my Application Tracker?" [ref=e68] [cursor=pointer]:
+              - generic [ref=e69]: Can companies see my Application Tracker?
+              - img [ref=e70]
+  - alert [ref=e72]: /myhiringcafe/tracker
+  - generic:
+    - region "Notifications-top"
+    - region "Notifications-top-left"
+    - region "Notifications-top-right"
+    - region "Notifications-bottom-left"
+    - region "Notifications-bottom"
+    - region "Notifications-bottom-right"
